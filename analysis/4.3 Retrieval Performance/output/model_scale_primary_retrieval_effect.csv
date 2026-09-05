@@ -1,0 +1,13 @@
+builder_key,display_name,family,parameter_billions,mean_difference,rank_outlier
+qwen35_0_8b,Qwen3.5 0.8B,qwen3.5,0.8,0.08888888888888889,11.0
+qwen35_2b,Qwen3.5 2B,qwen3.5,2.0,0.07777777777777778,9.0
+qwen35_4b,Qwen3.5 4B,qwen3.5,4.0,0.07777777777777778,9.0
+qwen35_9b,Qwen3.5 9B,qwen3.5,9.0,0.13333333333333333,3.0
+qwen3_0_6b,Qwen3 0.6B,qwen3,0.6,0.1111111111111111,7.0
+qwen3_1_7b,Qwen3 1.7B,qwen3,1.7,0.12222222222222222,4.0
+qwen3_4b,Qwen3 4B,qwen3,4.0,0.06666666666666667,6.0
+qwen3_8b,Qwen3 8B,qwen3,8.0,0.044444444444444446,2.0
+gemma3_270m,Gemma 3 270M,gemma3,0.27,0.08888888888888889,11.0
+gemma3_1b,Gemma 3 1B,gemma3,1.0,0.03333333333333333,1.0
+gemma3_4b,Gemma 3 4B,gemma3,4.0,0.1111111111111111,7.0
+gemma3_12b,Gemma 3 12B,gemma3,12.0,0.12222222222222222,4.0

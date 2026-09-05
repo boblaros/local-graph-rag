@@ -1,0 +1,43 @@
+regime,question_type,outcome_group,count,share_within_stratum
+Native,comparison,Correct answer,12,0.03333333333333333
+Native,comparison,"Evidence retrieved, answer incorrect",48,0.13333333333333333
+Native,comparison,Over-abstention despite retrieval hit,52,0.14444444444444443
+Native,comparison,Retrieval miss,248,0.6888888888888889
+Native,inference,Correct answer,45,0.125
+Native,inference,"Evidence retrieved, answer incorrect",45,0.125
+Native,inference,Over-abstention despite retrieval hit,19,0.05277777777777778
+Native,inference,Retrieval miss,251,0.6972222222222222
+Native,temporal,Correct answer,10,0.027777777777777776
+Native,temporal,"Evidence retrieved, answer incorrect",12,0.03333333333333333
+Native,temporal,Over-abstention despite retrieval hit,78,0.21666666666666667
+Native,temporal,Retrieval miss,260,0.7222222222222222
+Native,unanswerable,Correct unanswerable decision,256,0.7111111111111111
+Native,unanswerable,Incorrect unanswerable decision,104,0.28888888888888886
+ER,comparison,Correct answer,17,0.04722222222222222
+ER,comparison,"Evidence retrieved, answer incorrect",55,0.1527777777777778
+ER,comparison,Over-abstention despite retrieval hit,67,0.18611111111111112
+ER,comparison,Retrieval miss,221,0.6138888888888889
+ER,inference,Correct answer,67,0.18611111111111112
+ER,inference,"Evidence retrieved, answer incorrect",40,0.1111111111111111
+ER,inference,Over-abstention despite retrieval hit,23,0.06388888888888888
+ER,inference,Retrieval miss,230,0.6388888888888888
+ER,temporal,Correct answer,12,0.03333333333333333
+ER,temporal,"Evidence retrieved, answer incorrect",15,0.041666666666666664
+ER,temporal,Over-abstention despite retrieval hit,119,0.33055555555555555
+ER,temporal,Retrieval miss,214,0.5944444444444444
+ER,unanswerable,Correct unanswerable decision,273,0.7583333333333333
+ER,unanswerable,Incorrect unanswerable decision,87,0.24166666666666667
+ER+RR,comparison,Correct answer,14,0.03888888888888889
+ER+RR,comparison,"Evidence retrieved, answer incorrect",60,0.16666666666666666
+ER+RR,comparison,Over-abstention despite retrieval hit,65,0.18055555555555555
+ER+RR,comparison,Retrieval miss,221,0.6138888888888889
+ER+RR,inference,Correct answer,66,0.18333333333333332
+ER+RR,inference,"Evidence retrieved, answer incorrect",41,0.11388888888888889
+ER+RR,inference,Over-abstention despite retrieval hit,25,0.06944444444444445
+ER+RR,inference,Retrieval miss,228,0.6333333333333333
+ER+RR,temporal,Correct answer,12,0.03333333333333333
+ER+RR,temporal,"Evidence retrieved, answer incorrect",17,0.04722222222222222
+ER+RR,temporal,Over-abstention despite retrieval hit,118,0.3277777777777778
+ER+RR,temporal,Retrieval miss,213,0.5916666666666667
+ER+RR,unanswerable,Correct unanswerable decision,277,0.7694444444444445
+ER+RR,unanswerable,Incorrect unanswerable decision,83,0.23055555555555557

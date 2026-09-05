@@ -1,0 +1,15 @@
+\begin{tabular}{lllrllrrrrlr}
+\toprule
+family & regime & retrieval_hit_mean & retrieval_hit_std & retrieval_hit_min & retrieval_hit_max & retrieval_recall_mean & retrieval_recall_std & reciprocal_rank_mean & reciprocal_rank_std & complete_chain_recall_at_5_mean & complete_chain_recall_at_5_std \\
+\midrule
+gemma3 & Native & 0.3583 & 0.0591 & 0.3111 & 0.4333 & 0.1616 & 0.0388 & 0.3072 & 0.0519 & 0.0222 & 0.0203 \\
+gemma3 & ER & 0.4361 & 0.0278 & 0.4222 & 0.4778 & 0.1968 & 0.0222 & 0.3606 & 0.0095 & 0.0278 & 0.0143 \\
+gemma3 & ER+RR & 0.4472 & 0.0229 & 0.4222 & 0.4667 & 0.2072 & 0.0221 & 0.3630 & 0.0117 & 0.0389 & 0.0143 \\
+qwen3 & Native & 0.2944 & 0.1113 & 0.1889 & 0.4333 & 0.1294 & 0.0436 & 0.2664 & 0.0747 & 0.0111 & 0.0128 \\
+qwen3 & ER & 0.3778 & 0.0894 & 0.2667 & 0.4556 & 0.1718 & 0.0422 & 0.3368 & 0.0682 & 0.0306 & 0.0106 \\
+qwen3 & ER+RR & 0.3806 & 0.1008 & 0.2556 & 0.4778 & 0.1748 & 0.0499 & 0.3337 & 0.0729 & 0.0333 & 0.0240 \\
+qwen3.5 & Native & 0.2389 & 0.0467 & 0.1778 & 0.2889 & 0.1042 & 0.0249 & 0.2264 & 0.0403 & 0.0167 & 0.0111 \\
+qwen3.5 & ER & 0.3389 & 0.0411 & 0.3000 & 0.3889 & 0.1516 & 0.0333 & 0.3023 & 0.0299 & 0.0222 & 0.0128 \\
+qwen3.5 & ER+RR & 0.3333 & 0.0272 & 0.3111 & 0.3667 & 0.1484 & 0.0239 & 0.2977 & 0.0303 & 0.0222 & 0.0128 \\
+\bottomrule
+\end{tabular}

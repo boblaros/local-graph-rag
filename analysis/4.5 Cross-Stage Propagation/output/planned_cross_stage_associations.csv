@@ -1,0 +1,13 @@
+predictor,predictor_field,outcome,outcome_field,spearman_rho,ci_lower,ci_upper,builder_count,absolute_rho
+ER merge rate,er_merge_rate_per_mention,ER retrieval-hit effect,secondary_retrieval_hit_effect,-0.6796981854322887,-0.9215159286075523,-0.1693916429270603,12,0.6796981854322887
+RR LCC-share change,rr_lcc_share_change,RR answer-correctness effect,incremental_answer_correct_effect,0.400091868374248,-0.23585555514294093,0.8337966824563376,12,0.400091868374248
+Native graph nodes,native_nodes,Native retrieval hit,native_retrieval_hit,-0.3754409076150396,-0.9078014184397164,0.33333333333333337,12,0.3754409076150396
+Primary retrieval-hit effect,primary_retrieval_hit_effect,Primary answer-correctness effect,primary_answer_correct_effect,0.34341854472228084,-0.3564401946414627,0.86720614896029,12,0.34341854472228084
+Parameter count,parameter_billions,Primary answer-correctness effect,primary_answer_correct_effect,0.3131692428555514,-0.43274713979275103,0.8804867977791903,12,0.3131692428555514
+Primary edge change,primary_edge_change,Primary retrieval-hit effect,primary_retrieval_hit_effect,-0.2887395542336395,-0.8231205407778353,0.44854971091541723,12,0.2887395542336395
+ER node change,secondary_node_change,ER retrieval-hit effect,secondary_retrieval_hit_effect,0.2624261977680193,-0.4823581562053271,0.8521356212135576,12,0.2624261977680193
+Primary retrieval-recall effect,primary_retrieval_recall_effect,Primary Token-F1 effect,primary_token_f1_effect,0.25919479328518813,-0.4657129245130994,0.7785714285714286,12,0.25919479328518813
+Primary LCC-share change,primary_lcc_share_change,Primary retrieval-hit effect,primary_retrieval_hit_effect,-0.2183152727132396,-0.7936144182143848,0.5321312037242996,12,0.2183152727132396
+Parameter count,parameter_billions,Primary retrieval-hit effect,primary_retrieval_hit_effect,0.18085106382978725,-0.6182329900551539,0.684834666664504,12,0.18085106382978725
+RR edge change,rr_edge_change,RR retrieval-hit effect,incremental_retrieval_hit_effect,0.16163851497042242,-0.6423424465926278,0.6866039020202671,12,0.16163851497042242
+Primary average-degree change,primary_average_degree_change,Primary retrieval-recall effect,primary_retrieval_recall_effect,0.03852895575860905,-0.6083877742341903,0.6288910030365926,12,0.03852895575860905

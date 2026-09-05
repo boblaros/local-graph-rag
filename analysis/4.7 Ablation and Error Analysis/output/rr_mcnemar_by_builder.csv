@@ -1,0 +1,25 @@
+builder_key,metric,er_only_success,rr_only_success,discordant_pairs,raw_p_value,paired_questions,holm_adjusted_p_value,holm_reject_0_05,display_name,family,parameter_billions,scale_band
+qwen35_0_8b,retrieval_hit,4,0,4,0.125,90,1.0,False,Qwen3.5 0.8B,qwen3.5,0.8,sub_1b
+qwen35_2b,retrieval_hit,0,1,1,1.0,90,1.0,False,Qwen3.5 2B,qwen3.5,2.0,1_to_lt4b
+qwen35_4b,retrieval_hit,0,0,0,1.0,90,1.0,False,Qwen3.5 4B,qwen3.5,4.0,4_to_lt8b
+qwen35_9b,retrieval_hit,1,2,3,1.0,90,1.0,False,Qwen3.5 9B,qwen3.5,9.0,8b_plus
+qwen3_0_6b,retrieval_hit,0,0,0,1.0,90,1.0,False,Qwen3 0.6B,qwen3,0.6,sub_1b
+qwen3_1_7b,retrieval_hit,0,0,0,1.0,90,1.0,False,Qwen3 1.7B,qwen3,1.7,1_to_lt4b
+qwen3_4b,retrieval_hit,1,0,1,1.0,90,1.0,False,Qwen3 4B,qwen3,4.0,4_to_lt8b
+qwen3_8b,retrieval_hit,0,2,2,0.5,90,1.0,False,Qwen3 8B,qwen3,8.0,8b_plus
+gemma3_270m,retrieval_hit,2,6,8,0.2890625,90,1.0,False,Gemma 3 270M,gemma3,0.27,sub_1b
+gemma3_1b,retrieval_hit,1,0,1,1.0,90,1.0,False,Gemma 3 1B,gemma3,1.0,1_to_lt4b
+gemma3_4b,retrieval_hit,0,0,0,1.0,90,1.0,False,Gemma 3 4B,gemma3,4.0,4_to_lt8b
+gemma3_12b,retrieval_hit,0,1,1,1.0,90,1.0,False,Gemma 3 12B,gemma3,12.0,8b_plus
+qwen35_0_8b,answer_correct,7,1,8,0.0703125,120,0.84375,False,Qwen3.5 0.8B,qwen3.5,0.8,sub_1b
+qwen35_2b,answer_correct,3,0,3,0.25,120,1.0,False,Qwen3.5 2B,qwen3.5,2.0,1_to_lt4b
+qwen35_4b,answer_correct,1,2,3,1.0,120,1.0,False,Qwen3.5 4B,qwen3.5,4.0,4_to_lt8b
+qwen35_9b,answer_correct,2,0,2,0.5,120,1.0,False,Qwen3.5 9B,qwen3.5,9.0,8b_plus
+qwen3_0_6b,answer_correct,1,3,4,0.625,120,1.0,False,Qwen3 0.6B,qwen3,0.6,sub_1b
+qwen3_1_7b,answer_correct,1,2,3,1.0,120,1.0,False,Qwen3 1.7B,qwen3,1.7,1_to_lt4b
+qwen3_4b,answer_correct,1,1,2,1.0,120,1.0,False,Qwen3 4B,qwen3,4.0,4_to_lt8b
+qwen3_8b,answer_correct,3,3,6,1.0,120,1.0,False,Qwen3 8B,qwen3,8.0,8b_plus
+gemma3_270m,answer_correct,2,4,6,0.6875,120,1.0,False,Gemma 3 270M,gemma3,0.27,sub_1b
+gemma3_1b,answer_correct,3,3,6,1.0,120,1.0,False,Gemma 3 1B,gemma3,1.0,1_to_lt4b
+gemma3_4b,answer_correct,1,3,4,0.625,120,1.0,False,Gemma 3 4B,gemma3,4.0,4_to_lt8b
+gemma3_12b,answer_correct,0,1,1,1.0,120,1.0,False,Gemma 3 12B,gemma3,12.0,8b_plus

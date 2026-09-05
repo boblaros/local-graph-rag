@@ -1,0 +1,4 @@
+regime,answerable_evaluations,gold_document_hit,correct_with_gold_hit,correct_without_gold_hit,gold_hit_percent,correct_with_hit_percent_of_total,hit_to_correct_conversion_percent
+Native,1080,321,67,94,29.72222222222222,6.203703703703703,20.87227414330218
+ER,1080,415,96,94,38.425925925925924,8.88888888888889,23.132530120481928
+ER+RR,1080,418,92,92,38.7037037037037,8.518518518518519,22.00956937799043

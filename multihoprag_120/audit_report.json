@@ -1,0 +1,280 @@
+{
+  "status": "passed",
+  "audit_kind": "model_free",
+  "dataset": "MultiHop-RAG",
+  "subset_id": "multihoprag_120_a3b015d303a201a2",
+  "parameters": {
+    "seed": 42,
+    "questions_per_type": 30,
+    "hard_negatives": 30,
+    "target_corpus_documents_soft": 155,
+    "gold_union_target_soft": 125
+  },
+  "summary": {
+    "checks_total": 35,
+    "checks_passed": 35,
+    "checks_failed": 0,
+    "failed_check_names": []
+  },
+  "checks": [
+    {
+      "name": "exact_question_count",
+      "passed": true,
+      "detail": 120
+    },
+    {
+      "name": "exact_type_balance",
+      "passed": true,
+      "detail": {
+        "comparison_query": 30,
+        "inference_query": 30,
+        "null_query": 30,
+        "temporal_query": 30
+      }
+    },
+    {
+      "name": "no_duplicate_question_ids",
+      "passed": true,
+      "detail": 120
+    },
+    {
+      "name": "no_duplicate_document_ids",
+      "passed": true,
+      "detail": 155
+    },
+    {
+      "name": "no_duplicate_document_urls_or_source_indices",
+      "passed": true,
+      "detail": 155
+    },
+    {
+      "name": "no_pilot_question_overlap",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "name": "mapping_covers_every_question_exactly",
+      "passed": true,
+      "detail": {
+        "mapping": 120,
+        "questions": 120
+      }
+    },
+    {
+      "name": "stable_question_id_method_matches_pilot",
+      "passed": true,
+      "detail": "mhq_ + SHA-256(query)[:16]"
+    },
+    {
+      "name": "question_hashes_match_exact_source_query",
+      "passed": true,
+      "detail": 120
+    },
+    {
+      "name": "question_source_fields_preserved_exactly",
+      "passed": true,
+      "detail": 120
+    },
+    {
+      "name": "answerable_questions_have_2_to_4_unique_gold_urls",
+      "passed": true,
+      "detail": "selected answerable questions"
+    },
+    {
+      "name": "null_queries_keep_empty_evidence_and_false_answerable",
+      "passed": true,
+      "detail": 30
+    },
+    {
+      "name": "every_evidence_url_resolves_exactly_once_and_fact_is_in_body",
+      "passed": true,
+      "detail": "exact URL and substring checks"
+    },
+    {
+      "name": "mapping_matches_question_rows",
+      "passed": true,
+      "detail": 120
+    },
+    {
+      "name": "stable_document_id_method_matches_pilot",
+      "passed": true,
+      "detail": "mhd_ + SHA-256(url)[:16]"
+    },
+    {
+      "name": "document_hashes_match_exact_source_body",
+      "passed": true,
+      "detail": 155
+    },
+    {
+      "name": "source_document_text_and_metadata_preserved_exactly",
+      "passed": true,
+      "detail": 155
+    },
+    {
+      "name": "source_null_values_preserved_without_fill",
+      "passed": true,
+      "detail": "deep source-field equality"
+    },
+    {
+      "name": "all_gold_documents_included",
+      "passed": true,
+      "detail": {
+        "required": 125,
+        "included": 125
+      }
+    },
+    {
+      "name": "exact_hard_negative_document_count",
+      "passed": true,
+      "detail": 30
+    },
+    {
+      "name": "gold_and_hard_negative_roles_are_disjoint",
+      "passed": true,
+      "detail": {
+        "gold": 125,
+        "hard_negative": 30
+      }
+    },
+    {
+      "name": "every_question_has_mapped_hard_negative",
+      "passed": true,
+      "detail": 120
+    },
+    {
+      "name": "hard_negatives_exclude_question_gold_complete_chain_and_direct_answer",
+      "passed": true,
+      "detail": "per linked question/document pair; normalized exact lexical checks"
+    },
+    {
+      "name": "hard_negative_link_audit_details_complete",
+      "passed": true,
+      "detail": 30
+    },
+    {
+      "name": "hard_negative_reverse_links_match_documents_and_mapping",
+      "passed": true,
+      "detail": 30
+    },
+    {
+      "name": "hard_negative_bm25_scores_ranks_and_overlap_reproducible",
+      "passed": true,
+      "detail": 121
+    },
+    {
+      "name": "pilot_document_overlap_computable",
+      "passed": true,
+      "detail": {
+        "count": 17,
+        "document_ids": [
+          "mhd_0c70d85015833356",
+          "mhd_3f63287ba856792c",
+          "mhd_3ff71c50cb02cf99",
+          "mhd_4b13a9dee44488e3",
+          "mhd_5e35a051a03df040",
+          "mhd_656e63b31ca40730",
+          "mhd_6f388affbc74a371",
+          "mhd_7b3619181fc8a2c0",
+          "mhd_7c61b795f6a5dee5",
+          "mhd_883e01bc82e19cf5",
+          "mhd_98b0ddf644244043",
+          "mhd_a0ca9f6399e72e19",
+          "mhd_a9a879368f2a59e1",
+          "mhd_e389f76203d8e8c1",
+          "mhd_e860349932e31fc3",
+          "mhd_e8be65978b66a7ec",
+          "mhd_eb046c4ddbd31a8f"
+        ]
+      }
+    },
+    {
+      "name": "manifest_source_file_hashes_match_exact_files",
+      "passed": true,
+      "detail": {
+        "questions": "03cfb4926461f868684903aadc8024447bdda5bb3f6804741424cce338515bff",
+        "corpus": "20b61b5ab84de84a927420c5d265b7ec8d859ae49980699958a787ade9e4d28f",
+        "pilot_questions": "b22a9caf1e78ca217595346c869191d0ba130f8e8e870b6768476aaa81fe8cac",
+        "pilot_documents": "d6bb4b74c5b17d80c68411c8d3874a1f3b9ce53bce2dddef1781292d3cb81ce0"
+      }
+    },
+    {
+      "name": "manifest_content_and_source_record_hash_maps_match_rows",
+      "passed": true,
+      "detail": {
+        "questions": 120,
+        "documents": 155
+      }
+    },
+    {
+      "name": "manifest_source_index_lists_match_rows",
+      "passed": true,
+      "detail": {
+        "questions": 120,
+        "gold_documents": 125,
+        "hard_negative_documents": 30
+      }
+    },
+    {
+      "name": "manifest_document_roles_match_rows",
+      "passed": true,
+      "detail": {
+        "gold": 125,
+        "hard_negative": 30
+      }
+    },
+    {
+      "name": "manifest_pilot_overlap_matches_recomputed_overlap",
+      "passed": true,
+      "detail": {
+        "questions": 0,
+        "documents": 17
+      }
+    },
+    {
+      "name": "stable_question_and_document_output_order",
+      "passed": true,
+      "detail": "type/corpus source-index order"
+    },
+    {
+      "name": "declared_output_file_hashes_match_bytes",
+      "passed": true,
+      "detail": {
+        "questions.jsonl": "354bce3a46e00dafef9f1d256aed79c6f1f149d6e38260a53ef361138991d87f",
+        "documents.jsonl": "f6d20f892c92e8219fae6a8dab841affdd659cc395038a113a29739f3563005a",
+        "selection_report.md": "4139afb01c5ed4c72416ce92bdb9891a1dba84c013926acd8da684d027acf8a6"
+      }
+    },
+    {
+      "name": "jsonl_record_line_hashes_match_exact_serialized_lines",
+      "passed": true,
+      "detail": {
+        "questions": 120,
+        "documents": 155
+      }
+    }
+  ],
+  "audited_file_hashes": {
+    "questions.jsonl": "354bce3a46e00dafef9f1d256aed79c6f1f149d6e38260a53ef361138991d87f",
+    "documents.jsonl": "f6d20f892c92e8219fae6a8dab841affdd659cc395038a113a29739f3563005a",
+    "selection_report.md": "4139afb01c5ed4c72416ce92bdb9891a1dba84c013926acd8da684d027acf8a6",
+    "manifest.json": "97681f1d0693486a89a868cdaf2bb760a304d74eb476d8f04781a308a71eeec8"
+  },
+  "source_file_hashes": {
+    "MultiHopRAG.json": "03cfb4926461f868684903aadc8024447bdda5bb3f6804741424cce338515bff",
+    "corpus.json": "20b61b5ab84de84a927420c5d265b7ec8d859ae49980699958a787ade9e4d28f",
+    "pilot_questions.jsonl": "b22a9caf1e78ca217595346c869191d0ba130f8e8e870b6768476aaa81fe8cac",
+    "pilot_documents.jsonl": "d6bb4b74c5b17d80c68411c8d3874a1f3b9ce53bce2dddef1781292d3cb81ce0"
+  },
+  "limitations": [
+    "BM25 and leakage checks are lexical and model-free; semantic paraphrase leakage cannot be proven absent.",
+    "null_query has no gold evidence, so its source/date/category selection profile is lexical only.",
+    "The source corpus covers September through December 2023 and has native source/category imbalance."
+  ],
+  "forbidden_operations_performed": {
+    "generative_model_selection": false,
+    "pilot_metric_selection": false,
+    "lightrag_run": false,
+    "ollama_indexing": false,
+    "main_experiment_run": false
+  }
+}

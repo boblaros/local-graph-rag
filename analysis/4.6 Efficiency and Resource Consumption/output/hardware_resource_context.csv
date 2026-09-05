@@ -1,0 +1,2 @@
+host_model,host_identifier,chip,cpu_cores,installed_unified_memory,platform_recorded_in_run,builder_quantization,builder_parameter_range_billions,fixed_query_answer_model,fixed_embedding_model,peak_rss_or_unified_memory_recorded,explicit_oom_event_in_active_lifecycle,resource_interpretation
+MacBook Pro,"MacBookPro18,1",Apple M1 Pro,10 (8 Performance and 2 Efficiency),16 GB,macOS-26.5.2-arm64-arm-64bit-Mach-O,Q4_K_M,0.27–12,Gemma 3 12B Q4_K_M,Qwen3-Embedding 0.6B Q8_0,False,False,capacity context only; no per-stage peak-memory measurement

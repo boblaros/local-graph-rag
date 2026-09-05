@@ -1,0 +1,55 @@
+# Experiment outputs
+/runs/
+/huggingface_dataset/
+
+# Local environments and secrets
+/.venv/
+.env
+
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.ruff_cache/
+.matplotlib/
+.mypy_cache/
+.pytype/
+.hypothesis/
+.coverage
+.coverage.*
+htmlcov/
+
+# macOS metadata
+.DS_Store
+
+# Logs and runtime lock files
+*.log
+screenlog.*
+logs/
+*.pid
+*.pid.lock
+*.lock
+*.lock.*
+
+# Keep reproducible dependency lock files
+!uv.lock
+!poetry.lock
+!Pipfile.lock
+!bun.lock
+!package-lock.json
+
+# Temporary files and workspaces
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+/.tmp/
+/tmp/
+/temp/
+/.workspaces/
+/workspaces/
+/workspace/
+/tmp_workspaces/
+/temp_workspaces/

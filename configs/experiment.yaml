@@ -1,0 +1,279 @@
+schema_version: "4.0.0"
+experiment_id: multihoprag_120_native_vs_er_vs_er_rr
+
+corpus:
+  subset_id: multihoprag_120_a3b015d303a201a2
+  manifest_path: ../multihoprag_120/manifest.json
+  manifest_sha256: 97681f1d0693486a89a868cdaf2bb760a304d74eb476d8f04781a308a71eeec8
+  documents_path: ../multihoprag_120/documents.jsonl
+  documents_sha256: f6d20f892c92e8219fae6a8dab841affdd659cc395038a113a29739f3563005a
+  questions_path: ../multihoprag_120/questions.jsonl
+  questions_sha256: 354bce3a46e00dafef9f1d256aed79c6f1f149d6e38260a53ef361138991d87f
+  expected_documents: 155
+  expected_questions: 120
+  expected_gold_documents: 125
+  expected_hard_negatives: 30
+
+# Exact Ollama names and digests used by the experiment.
+builders:
+  - key: qwen35_0_8b
+    display_name: Qwen3.5 0.8B
+    family: qwen3.5
+    requested_tag: hf.co/lmstudio-community/Qwen3.5-0.8B-GGUF:Q4_K_M
+    resolved_name: hf.co/lmstudio-community/Qwen3.5-0.8B-GGUF:Q4_K_M
+    digest: 32c8fdf8bceb2681379ef111eeac4e31333c5bd87d759dc60e7b017cc271c28a
+    quantization: Q4_K_M
+  - key: qwen35_2b
+    display_name: Qwen3.5 2B
+    family: qwen3.5
+    requested_tag: hf.co/lmstudio-community/Qwen3.5-2B-GGUF:Q4_K_M
+    resolved_name: hf.co/lmstudio-community/Qwen3.5-2B-GGUF:Q4_K_M
+    digest: 8b303e474ef40a8e107a30ef345a5f4068b81520819956c562fca863ace040f6
+    quantization: Q4_K_M
+  - key: qwen35_4b
+    display_name: Qwen3.5 4B
+    family: qwen3.5
+    requested_tag: hf.co/lmstudio-community/Qwen3.5-4B-GGUF:Q4_K_M
+    resolved_name: hf.co/lmstudio-community/Qwen3.5-4B-GGUF:Q4_K_M
+    digest: 16c6b28baef71aa6d6f48c6c2ccc1f367f69d26c46b1b5ddc2b6d25b2848e33e
+    quantization: Q4_K_M
+  - key: qwen35_9b
+    display_name: Qwen3.5 9B
+    family: qwen3.5
+    requested_tag: hf.co/lmstudio-community/Qwen3.5-9B-GGUF:Q4_K_M
+    resolved_name: hf.co/lmstudio-community/Qwen3.5-9B-GGUF:Q4_K_M
+    digest: cc5ca9ce128d34c2d75bc2a42ac7ec5b212b68261d69bcccceb0c4336b1a18fa
+    quantization: Q4_K_M
+  - key: qwen3_0_6b
+    display_name: Qwen3 0.6B
+    family: qwen3
+    requested_tag: hf.co/lmstudio-community/Qwen3-0.6B-GGUF:Q4_K_M
+    resolved_name: hf.co/lmstudio-community/Qwen3-0.6B-GGUF:Q4_K_M
+    digest: 96d97254ee53e56d7f426894c8a6e3d2c613c114c0f3b0de00957d3dafe6b77c
+    quantization: Q4_K_M
+  - key: qwen3_1_7b
+    display_name: Qwen3 1.7B
+    family: qwen3
+    requested_tag: hf.co/lmstudio-community/Qwen3-1.7B-GGUF:Q4_K_M
+    resolved_name: hf.co/lmstudio-community/Qwen3-1.7B-GGUF:Q4_K_M
+    digest: ffd21d736fcdd4b764c5eb5e4d86fe5282fd8b2f78ade0d8f930046c7cfafbea
+    quantization: Q4_K_M
+  - key: qwen3_4b
+    display_name: Qwen3 4B
+    family: qwen3
+    requested_tag: hf.co/lmstudio-community/Qwen3-4B-GGUF:Q4_K_M
+    resolved_name: hf.co/lmstudio-community/Qwen3-4B-GGUF:Q4_K_M
+    digest: 7755b669b9f69b44442a962ae46b19558ef41b178ba01044df672c7223fc2037
+    quantization: Q4_K_M
+  - key: qwen3_8b
+    display_name: Qwen3 8B
+    family: qwen3
+    requested_tag: hf.co/lmstudio-community/Qwen3-8B-GGUF:Q4_K_M
+    resolved_name: hf.co/lmstudio-community/Qwen3-8B-GGUF:Q4_K_M
+    digest: f1ab988bb6ceec875a24553886116b82b15aa804e9cb6a374a2e5e1133dd0b7d
+    quantization: Q4_K_M
+  - key: gemma3_270m
+    display_name: Gemma 3 270M
+    family: gemma3
+    requested_tag: hf.co/lmstudio-community/gemma-3-270m-it-GGUF:Q4_K_M
+    resolved_name: hf.co/lmstudio-community/gemma-3-270m-it-GGUF:Q4_K_M
+    digest: eb6913401088396e403d018735c01b0db18a27fbbc8af2dc22dc1205e93e73f3
+    quantization: Q4_K_M
+  - key: gemma3_1b
+    display_name: Gemma 3 1B
+    family: gemma3
+    requested_tag: hf.co/lmstudio-community/gemma-3-1b-it-GGUF:Q4_K_M
+    resolved_name: hf.co/lmstudio-community/gemma-3-1b-it-GGUF:Q4_K_M
+    digest: b18efb83946e39ad402afdf3d01401af6dc17995aa522d4b2d51e09caee2d67a
+    quantization: Q4_K_M
+  - key: gemma3_4b
+    display_name: Gemma 3 4B
+    family: gemma3
+    requested_tag: hf.co/lmstudio-community/gemma-3-4b-it-GGUF:Q4_K_M
+    resolved_name: hf.co/lmstudio-community/gemma-3-4b-it-GGUF:Q4_K_M
+    digest: 17745c2a5dec8d9494e90c1dd7b3092b06ca701448aec434af8b852d02c534d1
+    quantization: Q4_K_M
+  - key: gemma3_12b
+    display_name: Gemma 3 12B
+    family: gemma3
+    requested_tag: hf.co/lmstudio-community/gemma-3-12b-it-GGUF:Q4_K_M
+    resolved_name: hf.co/lmstudio-community/gemma-3-12b-it-GGUF:Q4_K_M
+    digest: 3da9dd7dc4918115943bf62ebcd8b902792603491057a131f588dd9a9ab06c9c
+    quantization: Q4_K_M
+
+# Fixed model roles; a builder is not reused for another role automatically.
+roles:
+  query:
+    requested_tag: hf.co/lmstudio-community/gemma-3-12b-it-GGUF:Q4_K_M
+    resolved_name: hf.co/lmstudio-community/gemma-3-12b-it-GGUF:Q4_K_M
+    digest: 3da9dd7dc4918115943bf62ebcd8b902792603491057a131f588dd9a9ab06c9c
+    generation:
+      temperature: 0.0
+      seed: 42
+      context_window: 8192
+      output_tokens: 256
+      think: false
+  answer:
+    requested_tag: hf.co/lmstudio-community/gemma-3-12b-it-GGUF:Q4_K_M
+    resolved_name: hf.co/lmstudio-community/gemma-3-12b-it-GGUF:Q4_K_M
+    digest: 3da9dd7dc4918115943bf62ebcd8b902792603491057a131f588dd9a9ab06c9c
+    generation:
+      temperature: 0.0
+      seed: 42
+      context_window: 8192
+      output_tokens: 64
+      think: false
+  embedding:
+    requested_tag: qwen3-embedding:0.6b
+    resolved_name: qwen3-embedding:0.6b
+    digest: ac6da0dfba84a81fdbfbaf330198c33cd77c4cdfc53e8bc50eb581914a15621d
+    dimension: 1024
+    max_tokens: 32768
+  er_judge:
+    requested_tag: hf.co/lmstudio-community/gemma-3-12b-it-GGUF:Q4_K_M
+    resolved_name: hf.co/lmstudio-community/gemma-3-12b-it-GGUF:Q4_K_M
+    digest: 3da9dd7dc4918115943bf62ebcd8b902792603491057a131f588dd9a9ab06c9c
+    prompt_version: er-pair-judge-v5-relationship-classification
+    temperature: 0.0
+    seed: 42
+    context_window: 8192
+    output_tokens: 256
+  rr_verifier:
+    requested_tag: hf.co/lmstudio-community/gemma-3-12b-it-GGUF:Q4_K_M
+    resolved_name: hf.co/lmstudio-community/gemma-3-12b-it-GGUF:Q4_K_M
+    digest: 3da9dd7dc4918115943bf62ebcd8b902792603491057a131f588dd9a9ab06c9c
+    prompt_version: rr-relation-only-v1
+    temperature: 0.0
+    seed: 42
+    context_window: 12288
+    output_tokens: 1024
+
+extraction:
+  version: native-lightrag-extraction-v10-stock-json
+  prompt_version: lightrag-1.5.2-official-json-v1
+  # Hash of the effective LightRAG extraction prompt.
+  prompt_sha256: 2659189cc759609ba359a1ad8ab9964b7e215808b90d0ef7aedfe0c784b032e8
+  temperature: 0.0
+  seed: 42
+  context_window: 8192
+  output_tokens: 4096
+  # Required for Qwen3/Qwen3.5 to return content within the token limit.
+  think: false
+  # Null selects LightRAG's built-in entity type guidance and official examples.
+  entity_types_guidance: null
+  max_gleaning: 1
+  json_extraction: true
+  llm_concurrency: 1
+  document_insertion_concurrency: 1
+  chunking:
+    version: lightrag-fixed-token-v1
+    chunk_token_size: 1200
+    chunk_overlap_token_size: 100
+    split_by_character: null
+    split_by_character_only: false
+
+entity_resolution:
+  version: corpus-native-merge-only-er-v8
+  config_version: "8.0.0"
+  # Fixed before the main run without using its QA results.
+  decision_policy:
+    version: expert-fixed-v1
+    reject_below_score: 0.50
+    auto_merge_at_score: 0.76
+    judge_candidate_method: reciprocal_embedding_neighbour
+    judge_mutual_top_k: 1
+    max_judge_calls_per_run: 650
+  # Candidate-retrieval boundary, not a merge/reject score boundary.
+  fuzzy_candidate_threshold: 0.70
+  containment_min_chars: 4
+  max_block_size: 200
+  embedding_neighbor_k: 3
+  embedding_lsh_tables: 4
+  embedding_lsh_bits: 10
+  embedding_lsh_max_bucket: 200
+  candidate_methods:
+    - exact_name
+    - containment
+    - fuzzy_name
+    - acronym
+    - embedding_neighbour
+    - reciprocal_embedding_neighbour
+  signal_weights:
+    name_exact: 0.24
+    lexical: 0.15
+    acronym: 0.09
+    containment: 0.08
+    description: 0.12
+    embedding: 0.12
+    type: 0.08
+    neighbourhood: 0.05
+    relation_context: 0.04
+    provenance: 0.01
+    frequency: 0.01
+    source_diversity: 0.01
+
+relation_recovery:
+  version: evidence-bound-relation-recovery-v1
+  config_version: "1.0.0"
+  candidate_policy_version: same-chunk-missing-canonical-pair-v1
+  require_exact_evidence_quote: true
+  include_existing_local_relations: true
+  max_calls_per_chunk: 1
+  retry_count: 0
+
+# Storage policy for the derived graphs. See LIGHTRAG_PARITY.md.
+graph_materialization:
+  missing_description_policy: preserve_with_audited_placeholders
+
+graph_regimes:
+  - native_lightrag
+  - advanced_lightrag_er
+  - advanced_lightrag_er_rr
+
+runtime:
+  runs_root: ../runs
+  minimum_free_disk_gib: 5.0
+  artifact_schema_version: "2.0.0"
+  ollama_host: http://localhost:11434
+  model_timeout_seconds: 900
+  # Allows all pairs already admitted by the fixed ER rule to be evaluated.
+  er_judge_budget_overrides:
+    qwen3_8b:
+      max_judge_calls_per_run: 1000
+      reason: >-
+        The initial 650-call planning estimate was non-binding for the other
+        eleven builders, but qwen3_8b deterministically admitted 824 pairs.
+        The override permits those same admitted pairs to be judged without
+        changing ER decision semantics.
+  lightrag:
+    provider: ollama
+    embedding_provider: ollama
+    llm_timeout_seconds: 900
+    max_extract_input_tokens: 8192
+    index_batch_size: 1
+    storage:
+      kv_storage: JsonKVStorage
+      vector_storage: NanoVectorDBStorage
+      graph_storage: NetworkXStorage
+      doc_status_storage: JsonDocStatusStorage
+    tiktoken_model_name: gpt-4o-mini
+    embedding_func_max_async: 1
+    kg_linked_chunk_selection: WEIGHT
+    enable_llm_cache: false
+    enable_llm_cache_for_entity_extract: false
+    embedding_cache:
+      enabled: false
+      similarity_threshold: 0.95
+      use_llm_check: false
+  retrieval:
+    mode: hybrid
+    top_k: 20
+    chunk_top_k: 20
+    max_entity_tokens: 2048
+    max_relation_tokens: 3072
+    max_total_tokens: 7000
+    enable_rerank: false
+    timeout_seconds: 900
+
+metadata:
+  full_experiment_authorized: false

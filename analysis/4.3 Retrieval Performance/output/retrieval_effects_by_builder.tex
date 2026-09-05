@@ -1,0 +1,150 @@
+\begin{tabular}{lllllrrrrrrllrl}
+\toprule
+builder_key & contrast & metric & left_regime & right_regime & left_mean & mean_difference & ci_lower & ci_upper & relative_difference_percent & paired_question_count & display_name & family & parameter_billions & scale_band \\
+\midrule
+qwen35_0_8b & Primary: ER+RR−Native & retrieval_hit & Native & ER+RR & 0.2556 & 0.0889 & 0.0000 & 0.1778 & 34.7826 & 90 & Qwen3.5 0.8B & qwen3.5 & 0.8000 & sub_1b \\
+qwen35_0_8b & Primary: ER+RR−Native & retrieval_recall & Native & ER+RR & 0.1167 & 0.0528 & 0.0102 & 0.0963 & 45.2381 & 90 & Qwen3.5 0.8B & qwen3.5 & 0.8000 & sub_1b \\
+qwen35_0_8b & Primary: ER+RR−Native & reciprocal_rank & Native & ER+RR & 0.2500 & 0.0481 & -0.0278 & 0.1278 & 19.2593 & 90 & Qwen3.5 0.8B & qwen3.5 & 0.8000 & sub_1b \\
+qwen35_0_8b & Primary: ER+RR−Native & complete_chain_recall_at_5 & Native & ER+RR & 0.0222 & 0.0111 & 0.0000 & 0.0333 & 50.0000 & 90 & Qwen3.5 0.8B & qwen3.5 & 0.8000 & sub_1b \\
+qwen35_0_8b & Secondary: ER−Native & retrieval_hit & Native & ER & 0.2556 & 0.1333 & 0.0333 & 0.2333 & 52.1739 & 90 & Qwen3.5 0.8B & qwen3.5 & 0.8000 & sub_1b \\
+qwen35_0_8b & Secondary: ER−Native & retrieval_recall & Native & ER & 0.1167 & 0.0787 & 0.0324 & 0.1259 & 67.4603 & 90 & Qwen3.5 0.8B & qwen3.5 & 0.8000 & sub_1b \\
+qwen35_0_8b & Secondary: ER−Native & reciprocal_rank & Native & ER & 0.2500 & 0.0704 & -0.0093 & 0.1500 & 28.1481 & 90 & Qwen3.5 0.8B & qwen3.5 & 0.8000 & sub_1b \\
+qwen35_0_8b & Secondary: ER−Native & complete_chain_recall_at_5 & Native & ER & 0.0222 & 0.0111 & 0.0000 & 0.0333 & 50.0000 & 90 & Qwen3.5 0.8B & qwen3.5 & 0.8000 & sub_1b \\
+qwen35_0_8b & Incremental: ER+RR−ER & retrieval_hit & ER & ER+RR & 0.3889 & -0.0444 & -0.0889 & -0.0111 & -11.4286 & 90 & Qwen3.5 0.8B & qwen3.5 & 0.8000 & sub_1b \\
+qwen35_0_8b & Incremental: ER+RR−ER & retrieval_recall & ER & ER+RR & 0.1954 & -0.0259 & -0.0481 & -0.0074 & -13.2701 & 90 & Qwen3.5 0.8B & qwen3.5 & 0.8000 & sub_1b \\
+qwen35_0_8b & Incremental: ER+RR−ER & reciprocal_rank & ER & ER+RR & 0.3204 & -0.0222 & -0.0444 & -0.0056 & -6.9364 & 90 & Qwen3.5 0.8B & qwen3.5 & 0.8000 & sub_1b \\
+qwen35_0_8b & Incremental: ER+RR−ER & complete_chain_recall_at_5 & ER & ER+RR & 0.0333 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 90 & Qwen3.5 0.8B & qwen3.5 & 0.8000 & sub_1b \\
+qwen35_2b & Primary: ER+RR−Native & retrieval_hit & Native & ER+RR & 0.2889 & 0.0778 & -0.0222 & 0.1778 & 26.9231 & 90 & Qwen3.5 2B & qwen3.5 & 2.0000 & 1_to_lt4b \\
+qwen35_2b & Primary: ER+RR−Native & retrieval_recall & Native & ER+RR & 0.1278 & 0.0407 & -0.0028 & 0.0852 & 31.8841 & 90 & Qwen3.5 2B & qwen3.5 & 2.0000 & 1_to_lt4b \\
+qwen35_2b & Primary: ER+RR−Native & reciprocal_rank & Native & ER+RR & 0.2630 & 0.0704 & -0.0222 & 0.1630 & 26.7606 & 90 & Qwen3.5 2B & qwen3.5 & 2.0000 & 1_to_lt4b \\
+qwen35_2b & Primary: ER+RR−Native & complete_chain_recall_at_5 & Native & ER+RR & 0.0222 & 0.0111 & 0.0000 & 0.0333 & 50.0000 & 90 & Qwen3.5 2B & qwen3.5 & 2.0000 & 1_to_lt4b \\
+qwen35_2b & Secondary: ER−Native & retrieval_hit & Native & ER & 0.2889 & 0.0667 & -0.0333 & 0.1667 & 23.0769 & 90 & Qwen3.5 2B & qwen3.5 & 2.0000 & 1_to_lt4b \\
+qwen35_2b & Secondary: ER−Native & retrieval_recall & Native & ER & 0.1278 & 0.0315 & -0.0102 & 0.0722 & 24.6377 & 90 & Qwen3.5 2B & qwen3.5 & 2.0000 & 1_to_lt4b \\
+qwen35_2b & Secondary: ER−Native & reciprocal_rank & Native & ER & 0.2630 & 0.0648 & -0.0278 & 0.1574 & 24.6479 & 90 & Qwen3.5 2B & qwen3.5 & 2.0000 & 1_to_lt4b \\
+qwen35_2b & Secondary: ER−Native & complete_chain_recall_at_5 & Native & ER & 0.0222 & 0.0111 & 0.0000 & 0.0333 & 50.0000 & 90 & Qwen3.5 2B & qwen3.5 & 2.0000 & 1_to_lt4b \\
+qwen35_2b & Incremental: ER+RR−ER & retrieval_hit & ER & ER+RR & 0.3556 & 0.0111 & 0.0000 & 0.0333 & 3.1250 & 90 & Qwen3.5 2B & qwen3.5 & 2.0000 & 1_to_lt4b \\
+qwen35_2b & Incremental: ER+RR−ER & retrieval_recall & ER & ER+RR & 0.1593 & 0.0093 & 0.0000 & 0.0241 & 5.8140 & 90 & Qwen3.5 2B & qwen3.5 & 2.0000 & 1_to_lt4b \\
+qwen35_2b & Incremental: ER+RR−ER & reciprocal_rank & ER & ER+RR & 0.3278 & 0.0056 & 0.0000 & 0.0167 & 1.6949 & 90 & Qwen3.5 2B & qwen3.5 & 2.0000 & 1_to_lt4b \\
+qwen35_2b & Incremental: ER+RR−ER & complete_chain_recall_at_5 & ER & ER+RR & 0.0333 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 90 & Qwen3.5 2B & qwen3.5 & 2.0000 & 1_to_lt4b \\
+qwen35_4b & Primary: ER+RR−Native & retrieval_hit & Native & ER+RR & 0.2333 & 0.0778 & 0.0000 & 0.1667 & 33.3333 & 90 & Qwen3.5 4B & qwen3.5 & 4.0000 & 4_to_lt8b \\
+qwen35_4b & Primary: ER+RR−Native & retrieval_recall & Native & ER+RR & 0.1019 & 0.0287 & -0.0083 & 0.0657 & 28.1818 & 90 & Qwen3.5 4B & qwen3.5 & 4.0000 & 4_to_lt8b \\
+qwen35_4b & Primary: ER+RR−Native & reciprocal_rank & Native & ER+RR & 0.2204 & 0.0796 & 0.0056 & 0.1556 & 36.1345 & 90 & Qwen3.5 4B & qwen3.5 & 4.0000 & 4_to_lt8b \\
+qwen35_4b & Primary: ER+RR−Native & complete_chain_recall_at_5 & Native & ER+RR & 0.0222 & -0.0111 & -0.0444 & 0.0222 & -50.0000 & 90 & Qwen3.5 4B & qwen3.5 & 4.0000 & 4_to_lt8b \\
+qwen35_4b & Secondary: ER−Native & retrieval_hit & Native & ER & 0.2333 & 0.0778 & 0.0000 & 0.1667 & 33.3333 & 90 & Qwen3.5 4B & qwen3.5 & 4.0000 & 4_to_lt8b \\
+qwen35_4b & Secondary: ER−Native & retrieval_recall & Native & ER & 0.1019 & 0.0287 & -0.0083 & 0.0657 & 28.1818 & 90 & Qwen3.5 4B & qwen3.5 & 4.0000 & 4_to_lt8b \\
+qwen35_4b & Secondary: ER−Native & reciprocal_rank & Native & ER & 0.2204 & 0.0796 & 0.0056 & 0.1556 & 36.1345 & 90 & Qwen3.5 4B & qwen3.5 & 4.0000 & 4_to_lt8b \\
+qwen35_4b & Secondary: ER−Native & complete_chain_recall_at_5 & Native & ER & 0.0222 & -0.0111 & -0.0444 & 0.0222 & -50.0000 & 90 & Qwen3.5 4B & qwen3.5 & 4.0000 & 4_to_lt8b \\
+qwen35_4b & Incremental: ER+RR−ER & retrieval_hit & ER & ER+RR & 0.3111 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 90 & Qwen3.5 4B & qwen3.5 & 4.0000 & 4_to_lt8b \\
+qwen35_4b & Incremental: ER+RR−ER & retrieval_recall & ER & ER+RR & 0.1306 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 90 & Qwen3.5 4B & qwen3.5 & 4.0000 & 4_to_lt8b \\
+qwen35_4b & Incremental: ER+RR−ER & reciprocal_rank & ER & ER+RR & 0.3000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 90 & Qwen3.5 4B & qwen3.5 & 4.0000 & 4_to_lt8b \\
+qwen35_4b & Incremental: ER+RR−ER & complete_chain_recall_at_5 & ER & ER+RR & 0.0111 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 90 & Qwen3.5 4B & qwen3.5 & 4.0000 & 4_to_lt8b \\
+qwen35_9b & Primary: ER+RR−Native & retrieval_hit & Native & ER+RR & 0.1778 & 0.1333 & 0.0444 & 0.2333 & 75.0000 & 90 & Qwen3.5 9B & qwen3.5 & 9.0000 & 8b_plus \\
+qwen35_9b & Primary: ER+RR−Native & retrieval_recall & Native & ER+RR & 0.0704 & 0.0546 & 0.0167 & 0.0944 & 77.6316 & 90 & Qwen3.5 9B & qwen3.5 & 9.0000 & 8b_plus \\
+qwen35_9b & Primary: ER+RR−Native & reciprocal_rank & Native & ER+RR & 0.1722 & 0.0870 & 0.0093 & 0.1648 & 50.5376 & 90 & Qwen3.5 9B & qwen3.5 & 9.0000 & 8b_plus \\
+qwen35_9b & Primary: ER+RR−Native & complete_chain_recall_at_5 & Native & ER+RR & 0.0000 & 0.0111 & 0.0000 & 0.0333 & — & 90 & Qwen3.5 9B & qwen3.5 & 9.0000 & 8b_plus \\
+qwen35_9b & Secondary: ER−Native & retrieval_hit & Native & ER & 0.1778 & 0.1222 & 0.0222 & 0.2111 & 68.7500 & 90 & Qwen3.5 9B & qwen3.5 & 9.0000 & 8b_plus \\
+qwen35_9b & Secondary: ER−Native & retrieval_recall & Native & ER & 0.0704 & 0.0509 & 0.0130 & 0.0898 & 72.3684 & 90 & Qwen3.5 9B & qwen3.5 & 9.0000 & 8b_plus \\
+qwen35_9b & Secondary: ER−Native & reciprocal_rank & Native & ER & 0.1722 & 0.0889 & 0.0111 & 0.1667 & 51.6129 & 90 & Qwen3.5 9B & qwen3.5 & 9.0000 & 8b_plus \\
+qwen35_9b & Secondary: ER−Native & complete_chain_recall_at_5 & Native & ER & 0.0000 & 0.0111 & 0.0000 & 0.0333 & — & 90 & Qwen3.5 9B & qwen3.5 & 9.0000 & 8b_plus \\
+qwen35_9b & Incremental: ER+RR−ER & retrieval_hit & ER & ER+RR & 0.3000 & 0.0111 & -0.0222 & 0.0556 & 3.7037 & 90 & Qwen3.5 9B & qwen3.5 & 9.0000 & 8b_plus \\
+qwen35_9b & Incremental: ER+RR−ER & retrieval_recall & ER & ER+RR & 0.1213 & 0.0037 & -0.0130 & 0.0222 & 3.0534 & 90 & Qwen3.5 9B & qwen3.5 & 9.0000 & 8b_plus \\
+qwen35_9b & Incremental: ER+RR−ER & reciprocal_rank & ER & ER+RR & 0.2611 & -0.0019 & -0.0296 & 0.0204 & -0.7092 & 90 & Qwen3.5 9B & qwen3.5 & 9.0000 & 8b_plus \\
+qwen35_9b & Incremental: ER+RR−ER & complete_chain_recall_at_5 & ER & ER+RR & 0.0111 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 90 & Qwen3.5 9B & qwen3.5 & 9.0000 & 8b_plus \\
+qwen3_0_6b & Primary: ER+RR−Native & retrieval_hit & Native & ER+RR & 0.3333 & 0.1111 & 0.0222 & 0.2000 & 33.3333 & 90 & Qwen3 0.6B & qwen3 & 0.6000 & sub_1b \\
+qwen3_0_6b & Primary: ER+RR−Native & retrieval_recall & Native & ER+RR & 0.1546 & 0.0389 & -0.0056 & 0.0833 & 25.1497 & 90 & Qwen3 0.6B & qwen3 & 0.6000 & sub_1b \\
+qwen3_0_6b & Primary: ER+RR−Native & reciprocal_rank & Native & ER+RR & 0.3222 & 0.0750 & -0.0028 & 0.1528 & 23.2759 & 90 & Qwen3 0.6B & qwen3 & 0.6000 & sub_1b \\
+qwen3_0_6b & Primary: ER+RR−Native & complete_chain_recall_at_5 & Native & ER+RR & 0.0222 & -0.0111 & -0.0444 & 0.0222 & -50.0000 & 90 & Qwen3 0.6B & qwen3 & 0.6000 & sub_1b \\
+qwen3_0_6b & Secondary: ER−Native & retrieval_hit & Native & ER & 0.3333 & 0.1111 & 0.0222 & 0.2000 & 33.3333 & 90 & Qwen3 0.6B & qwen3 & 0.6000 & sub_1b \\
+qwen3_0_6b & Secondary: ER−Native & retrieval_recall & Native & ER & 0.1546 & 0.0407 & -0.0046 & 0.0861 & 26.3473 & 90 & Qwen3 0.6B & qwen3 & 0.6000 & sub_1b \\
+qwen3_0_6b & Secondary: ER−Native & reciprocal_rank & Native & ER & 0.3222 & 0.0750 & -0.0028 & 0.1528 & 23.2759 & 90 & Qwen3 0.6B & qwen3 & 0.6000 & sub_1b \\
+qwen3_0_6b & Secondary: ER−Native & complete_chain_recall_at_5 & Native & ER & 0.0222 & 0.0000 & -0.0444 & 0.0444 & 0.0000 & 90 & Qwen3 0.6B & qwen3 & 0.6000 & sub_1b \\
+qwen3_0_6b & Incremental: ER+RR−ER & retrieval_hit & ER & ER+RR & 0.4444 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 90 & Qwen3 0.6B & qwen3 & 0.6000 & sub_1b \\
+qwen3_0_6b & Incremental: ER+RR−ER & retrieval_recall & ER & ER+RR & 0.1954 & -0.0019 & -0.0167 & 0.0111 & -0.9479 & 90 & Qwen3 0.6B & qwen3 & 0.6000 & sub_1b \\
+qwen3_0_6b & Incremental: ER+RR−ER & reciprocal_rank & ER & ER+RR & 0.3972 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 90 & Qwen3 0.6B & qwen3 & 0.6000 & sub_1b \\
+qwen3_0_6b & Incremental: ER+RR−ER & complete_chain_recall_at_5 & ER & ER+RR & 0.0222 & -0.0111 & -0.0333 & 0.0000 & -50.0000 & 90 & Qwen3 0.6B & qwen3 & 0.6000 & sub_1b \\
+qwen3_1_7b & Primary: ER+RR−Native & retrieval_hit & Native & ER+RR & 0.2222 & 0.1222 & 0.0556 & 0.1889 & 55.0000 & 90 & Qwen3 1.7B & qwen3 & 1.7000 & 1_to_lt4b \\
+qwen3_1_7b & Primary: ER+RR−Native & retrieval_recall & Native & ER+RR & 0.0889 & 0.0685 & 0.0380 & 0.1019 & 77.0833 & 90 & Qwen3 1.7B & qwen3 & 1.7000 & 1_to_lt4b \\
+qwen3_1_7b & Primary: ER+RR−Native & reciprocal_rank & Native & ER+RR & 0.2167 & 0.1111 & 0.0556 & 0.1778 & 51.2821 & 90 & Qwen3 1.7B & qwen3 & 1.7000 & 1_to_lt4b \\
+qwen3_1_7b & Primary: ER+RR−Native & complete_chain_recall_at_5 & Native & ER+RR & 0.0000 & 0.0333 & 0.0000 & 0.0778 & — & 90 & Qwen3 1.7B & qwen3 & 1.7000 & 1_to_lt4b \\
+qwen3_1_7b & Secondary: ER−Native & retrieval_hit & Native & ER & 0.2222 & 0.1222 & 0.0556 & 0.1889 & 55.0000 & 90 & Qwen3 1.7B & qwen3 & 1.7000 & 1_to_lt4b \\
+qwen3_1_7b & Secondary: ER−Native & retrieval_recall & Native & ER & 0.0889 & 0.0685 & 0.0380 & 0.1019 & 77.0833 & 90 & Qwen3 1.7B & qwen3 & 1.7000 & 1_to_lt4b \\
+qwen3_1_7b & Secondary: ER−Native & reciprocal_rank & Native & ER & 0.2167 & 0.1111 & 0.0556 & 0.1778 & 51.2821 & 90 & Qwen3 1.7B & qwen3 & 1.7000 & 1_to_lt4b \\
+qwen3_1_7b & Secondary: ER−Native & complete_chain_recall_at_5 & Native & ER & 0.0000 & 0.0333 & 0.0000 & 0.0778 & — & 90 & Qwen3 1.7B & qwen3 & 1.7000 & 1_to_lt4b \\
+qwen3_1_7b & Incremental: ER+RR−ER & retrieval_hit & ER & ER+RR & 0.3444 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 90 & Qwen3 1.7B & qwen3 & 1.7000 & 1_to_lt4b \\
+qwen3_1_7b & Incremental: ER+RR−ER & retrieval_recall & ER & ER+RR & 0.1574 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 90 & Qwen3 1.7B & qwen3 & 1.7000 & 1_to_lt4b \\
+qwen3_1_7b & Incremental: ER+RR−ER & reciprocal_rank & ER & ER+RR & 0.3278 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 90 & Qwen3 1.7B & qwen3 & 1.7000 & 1_to_lt4b \\
+qwen3_1_7b & Incremental: ER+RR−ER & complete_chain_recall_at_5 & ER & ER+RR & 0.0333 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 90 & Qwen3 1.7B & qwen3 & 1.7000 & 1_to_lt4b \\
+qwen3_4b & Primary: ER+RR−Native & retrieval_hit & Native & ER+RR & 0.1889 & 0.0667 & 0.0000 & 0.1444 & 35.2941 & 90 & Qwen3 4B & qwen3 & 4.0000 & 4_to_lt8b \\
+qwen3_4b & Primary: ER+RR−Native & retrieval_recall & Native & ER+RR & 0.0963 & 0.0194 & -0.0111 & 0.0519 & 20.1923 & 90 & Qwen3 4B & qwen3 & 4.0000 & 4_to_lt8b \\
+qwen3_4b & Primary: ER+RR−Native & reciprocal_rank & Native & ER+RR & 0.1889 & 0.0444 & -0.0167 & 0.1111 & 23.5294 & 90 & Qwen3 4B & qwen3 & 4.0000 & 4_to_lt8b \\
+qwen3_4b & Primary: ER+RR−Native & complete_chain_recall_at_5 & Native & ER+RR & 0.0222 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 90 & Qwen3 4B & qwen3 & 4.0000 & 4_to_lt8b \\
+qwen3_4b & Secondary: ER−Native & retrieval_hit & Native & ER & 0.1889 & 0.0778 & 0.0000 & 0.1556 & 41.1765 & 90 & Qwen3 4B & qwen3 & 4.0000 & 4_to_lt8b \\
+qwen3_4b & Secondary: ER−Native & retrieval_recall & Native & ER & 0.0963 & 0.0231 & -0.0093 & 0.0556 & 24.0385 & 90 & Qwen3 4B & qwen3 & 4.0000 & 4_to_lt8b \\
+qwen3_4b & Secondary: ER−Native & reciprocal_rank & Native & ER & 0.1889 & 0.0556 & -0.0111 & 0.1222 & 29.4118 & 90 & Qwen3 4B & qwen3 & 4.0000 & 4_to_lt8b \\
+qwen3_4b & Secondary: ER−Native & complete_chain_recall_at_5 & Native & ER & 0.0222 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 90 & Qwen3 4B & qwen3 & 4.0000 & 4_to_lt8b \\
+qwen3_4b & Incremental: ER+RR−ER & retrieval_hit & ER & ER+RR & 0.2667 & -0.0111 & -0.0333 & 0.0000 & -4.1667 & 90 & Qwen3 4B & qwen3 & 4.0000 & 4_to_lt8b \\
+qwen3_4b & Incremental: ER+RR−ER & retrieval_recall & ER & ER+RR & 0.1194 & -0.0037 & -0.0111 & 0.0000 & -3.1008 & 90 & Qwen3 4B & qwen3 & 4.0000 & 4_to_lt8b \\
+qwen3_4b & Incremental: ER+RR−ER & reciprocal_rank & ER & ER+RR & 0.2444 & -0.0111 & -0.0333 & 0.0000 & -4.5455 & 90 & Qwen3 4B & qwen3 & 4.0000 & 4_to_lt8b \\
+qwen3_4b & Incremental: ER+RR−ER & complete_chain_recall_at_5 & ER & ER+RR & 0.0222 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 90 & Qwen3 4B & qwen3 & 4.0000 & 4_to_lt8b \\
+qwen3_8b & Primary: ER+RR−Native & retrieval_hit & Native & ER+RR & 0.4333 & 0.0444 & -0.0333 & 0.1333 & 10.2564 & 90 & Qwen3 8B & qwen3 & 8.0000 & 8b_plus \\
+qwen3_8b & Primary: ER+RR−Native & retrieval_recall & Native & ER+RR & 0.1778 & 0.0546 & 0.0111 & 0.0981 & 30.7292 & 90 & Qwen3 8B & qwen3 & 8.0000 & 8b_plus \\
+qwen3_8b & Primary: ER+RR−Native & reciprocal_rank & Native & ER+RR & 0.3380 & 0.0383 & -0.0207 & 0.0994 & 11.3425 & 90 & Qwen3 8B & qwen3 & 8.0000 & 8b_plus \\
+qwen3_8b & Primary: ER+RR−Native & complete_chain_recall_at_5 & Native & ER+RR & 0.0000 & 0.0667 & 0.0222 & 0.1222 & — & 90 & Qwen3 8B & qwen3 & 8.0000 & 8b_plus \\
+qwen3_8b & Secondary: ER−Native & retrieval_hit & Native & ER & 0.4333 & 0.0222 & -0.0556 & 0.1000 & 5.1282 & 90 & Qwen3 8B & qwen3 & 8.0000 & 8b_plus \\
+qwen3_8b & Secondary: ER−Native & retrieval_recall & Native & ER & 0.1778 & 0.0370 & -0.0065 & 0.0815 & 20.8333 & 90 & Qwen3 8B & qwen3 & 8.0000 & 8b_plus \\
+qwen3_8b & Secondary: ER−Native & reciprocal_rank & Native & ER & 0.3380 & 0.0398 & -0.0176 & 0.0991 & 11.7808 & 90 & Qwen3 8B & qwen3 & 8.0000 & 8b_plus \\
+qwen3_8b & Secondary: ER−Native & complete_chain_recall_at_5 & Native & ER & 0.0000 & 0.0444 & 0.0111 & 0.0889 & — & 90 & Qwen3 8B & qwen3 & 8.0000 & 8b_plus \\
+qwen3_8b & Incremental: ER+RR−ER & retrieval_hit & ER & ER+RR & 0.4556 & 0.0222 & 0.0000 & 0.0556 & 4.8780 & 90 & Qwen3 8B & qwen3 & 8.0000 & 8b_plus \\
+qwen3_8b & Incremental: ER+RR−ER & retrieval_recall & ER & ER+RR & 0.2148 & 0.0176 & -0.0037 & 0.0426 & 8.1897 & 90 & Qwen3 8B & qwen3 & 8.0000 & 8b_plus \\
+qwen3_8b & Incremental: ER+RR−ER & reciprocal_rank & ER & ER+RR & 0.3778 & -0.0015 & -0.0193 & 0.0170 & -0.3922 & 90 & Qwen3 8B & qwen3 & 8.0000 & 8b_plus \\
+qwen3_8b & Incremental: ER+RR−ER & complete_chain_recall_at_5 & ER & ER+RR & 0.0444 & 0.0222 & -0.0222 & 0.0667 & 50.0000 & 90 & Qwen3 8B & qwen3 & 8.0000 & 8b_plus \\
+gemma3_270m & Primary: ER+RR−Native & retrieval_hit & Native & ER+RR & 0.3778 & 0.0889 & 0.0222 & 0.1556 & 23.5294 & 90 & Gemma 3 270M & gemma3 & 0.2700 & sub_1b \\
+gemma3_270m & Primary: ER+RR−Native & retrieval_recall & Native & ER+RR & 0.1611 & 0.0676 & 0.0296 & 0.1065 & 41.9540 & 90 & Gemma 3 270M & gemma3 & 0.2700 & sub_1b \\
+gemma3_270m & Primary: ER+RR−Native & reciprocal_rank & Native & ER+RR & 0.3222 & 0.0519 & 0.0056 & 0.0981 & 16.0920 & 90 & Gemma 3 270M & gemma3 & 0.2700 & sub_1b \\
+gemma3_270m & Primary: ER+RR−Native & complete_chain_recall_at_5 & Native & ER+RR & 0.0111 & 0.0444 & 0.0000 & 0.1000 & 400.0000 & 90 & Gemma 3 270M & gemma3 & 0.2700 & sub_1b \\
+gemma3_270m & Secondary: ER−Native & retrieval_hit & Native & ER & 0.3778 & 0.0444 & -0.0222 & 0.1111 & 11.7647 & 90 & Gemma 3 270M & gemma3 & 0.2700 & sub_1b \\
+gemma3_270m & Secondary: ER−Native & retrieval_recall & Native & ER & 0.1611 & 0.0241 & -0.0065 & 0.0556 & 14.9425 & 90 & Gemma 3 270M & gemma3 & 0.2700 & sub_1b \\
+gemma3_270m & Secondary: ER−Native & reciprocal_rank & Native & ER & 0.3222 & 0.0370 & -0.0074 & 0.0815 & 11.4943 & 90 & Gemma 3 270M & gemma3 & 0.2700 & sub_1b \\
+gemma3_270m & Secondary: ER−Native & complete_chain_recall_at_5 & Native & ER & 0.0111 & 0.0000 & -0.0333 & 0.0333 & 0.0000 & 90 & Gemma 3 270M & gemma3 & 0.2700 & sub_1b \\
+gemma3_270m & Incremental: ER+RR−ER & retrieval_hit & ER & ER+RR & 0.4222 & 0.0444 & -0.0111 & 0.1111 & 10.5263 & 90 & Gemma 3 270M & gemma3 & 0.2700 & sub_1b \\
+gemma3_270m & Incremental: ER+RR−ER & retrieval_recall & ER & ER+RR & 0.1852 & 0.0435 & 0.0111 & 0.0778 & 23.5000 & 90 & Gemma 3 270M & gemma3 & 0.2700 & sub_1b \\
+gemma3_270m & Incremental: ER+RR−ER & reciprocal_rank & ER & ER+RR & 0.3593 & 0.0148 & -0.0167 & 0.0463 & 4.1237 & 90 & Gemma 3 270M & gemma3 & 0.2700 & sub_1b \\
+gemma3_270m & Incremental: ER+RR−ER & complete_chain_recall_at_5 & ER & ER+RR & 0.0111 & 0.0444 & 0.0111 & 0.0889 & 400.0000 & 90 & Gemma 3 270M & gemma3 & 0.2700 & sub_1b \\
+gemma3_1b & Primary: ER+RR−Native & retrieval_hit & Native & ER+RR & 0.4333 & 0.0333 & -0.0556 & 0.1222 & 7.6923 & 90 & Gemma 3 1B & gemma3 & 1.0000 & 1_to_lt4b \\
+gemma3_1b & Primary: ER+RR−Native & retrieval_recall & Native & ER+RR & 0.2167 & 0.0056 & -0.0398 & 0.0528 & 2.5641 & 90 & Gemma 3 1B & gemma3 & 1.0000 & 1_to_lt4b \\
+gemma3_1b & Primary: ER+RR−Native & reciprocal_rank & Native & ER+RR & 0.3731 & -0.0139 & -0.0861 & 0.0611 & -3.7221 & 90 & Gemma 3 1B & gemma3 & 1.0000 & 1_to_lt4b \\
+gemma3_1b & Primary: ER+RR−Native & complete_chain_recall_at_5 & Native & ER+RR & 0.0444 & -0.0111 & -0.0444 & 0.0222 & -25.0000 & 90 & Gemma 3 1B & gemma3 & 1.0000 & 1_to_lt4b \\
+gemma3_1b & Secondary: ER−Native & retrieval_hit & Native & ER & 0.4333 & 0.0444 & -0.0444 & 0.1333 & 10.2564 & 90 & Gemma 3 1B & gemma3 & 1.0000 & 1_to_lt4b \\
+gemma3_1b & Secondary: ER−Native & retrieval_recall & Native & ER & 0.2167 & 0.0130 & -0.0324 & 0.0602 & 5.9829 & 90 & Gemma 3 1B & gemma3 & 1.0000 & 1_to_lt4b \\
+gemma3_1b & Secondary: ER−Native & reciprocal_rank & Native & ER & 0.3731 & -0.0028 & -0.0759 & 0.0722 & -0.7444 & 90 & Gemma 3 1B & gemma3 & 1.0000 & 1_to_lt4b \\
+gemma3_1b & Secondary: ER−Native & complete_chain_recall_at_5 & Native & ER & 0.0444 & -0.0111 & -0.0444 & 0.0222 & -25.0000 & 90 & Gemma 3 1B & gemma3 & 1.0000 & 1_to_lt4b \\
+gemma3_1b & Incremental: ER+RR−ER & retrieval_hit & ER & ER+RR & 0.4778 & -0.0111 & -0.0333 & 0.0000 & -2.3256 & 90 & Gemma 3 1B & gemma3 & 1.0000 & 1_to_lt4b \\
+gemma3_1b & Incremental: ER+RR−ER & retrieval_recall & ER & ER+RR & 0.2296 & -0.0074 & -0.0185 & 0.0000 & -3.2258 & 90 & Gemma 3 1B & gemma3 & 1.0000 & 1_to_lt4b \\
+gemma3_1b & Incremental: ER+RR−ER & reciprocal_rank & ER & ER+RR & 0.3704 & -0.0111 & -0.0278 & 0.0000 & -3.0000 & 90 & Gemma 3 1B & gemma3 & 1.0000 & 1_to_lt4b \\
+gemma3_1b & Incremental: ER+RR−ER & complete_chain_recall_at_5 & ER & ER+RR & 0.0333 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 90 & Gemma 3 1B & gemma3 & 1.0000 & 1_to_lt4b \\
+gemma3_4b & Primary: ER+RR−Native & retrieval_hit & Native & ER+RR & 0.3111 & 0.1111 & 0.0222 & 0.2000 & 35.7143 & 90 & Gemma 3 4B & gemma3 & 4.0000 & 4_to_lt8b \\
+gemma3_4b & Primary: ER+RR−Native & retrieval_recall & Native & ER+RR & 0.1343 & 0.0472 & 0.0083 & 0.0889 & 35.1724 & 90 & Gemma 3 4B & gemma3 & 4.0000 & 4_to_lt8b \\
+gemma3_4b & Primary: ER+RR−Native & reciprocal_rank & Native & ER+RR & 0.2769 & 0.0713 & -0.0009 & 0.1435 & 25.7525 & 90 & Gemma 3 4B & gemma3 & 4.0000 & 4_to_lt8b \\
+gemma3_4b & Primary: ER+RR−Native & complete_chain_recall_at_5 & Native & ER+RR & 0.0333 & -0.0111 & -0.0333 & 0.0000 & -33.3333 & 90 & Gemma 3 4B & gemma3 & 4.0000 & 4_to_lt8b \\
+gemma3_4b & Secondary: ER−Native & retrieval_hit & Native & ER & 0.3111 & 0.1111 & 0.0222 & 0.2000 & 35.7143 & 90 & Gemma 3 4B & gemma3 & 4.0000 & 4_to_lt8b \\
+gemma3_4b & Secondary: ER−Native & retrieval_recall & Native & ER & 0.1343 & 0.0472 & 0.0083 & 0.0889 & 35.1724 & 90 & Gemma 3 4B & gemma3 & 4.0000 & 4_to_lt8b \\
+gemma3_4b & Secondary: ER−Native & reciprocal_rank & Native & ER & 0.2769 & 0.0713 & -0.0009 & 0.1435 & 25.7525 & 90 & Gemma 3 4B & gemma3 & 4.0000 & 4_to_lt8b \\
+gemma3_4b & Secondary: ER−Native & complete_chain_recall_at_5 & Native & ER & 0.0333 & -0.0111 & -0.0333 & 0.0000 & -33.3333 & 90 & Gemma 3 4B & gemma3 & 4.0000 & 4_to_lt8b \\
+gemma3_4b & Incremental: ER+RR−ER & retrieval_hit & ER & ER+RR & 0.4222 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 90 & Gemma 3 4B & gemma3 & 4.0000 & 4_to_lt8b \\
+gemma3_4b & Incremental: ER+RR−ER & retrieval_recall & ER & ER+RR & 0.1815 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 90 & Gemma 3 4B & gemma3 & 4.0000 & 4_to_lt8b \\
+gemma3_4b & Incremental: ER+RR−ER & reciprocal_rank & ER & ER+RR & 0.3481 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 90 & Gemma 3 4B & gemma3 & 4.0000 & 4_to_lt8b \\
+gemma3_4b & Incremental: ER+RR−ER & complete_chain_recall_at_5 & ER & ER+RR & 0.0222 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 90 & Gemma 3 4B & gemma3 & 4.0000 & 4_to_lt8b \\
+gemma3_12b & Primary: ER+RR−Native & retrieval_hit & Native & ER+RR & 0.3111 & 0.1222 & 0.0222 & 0.2222 & 39.2857 & 90 & Gemma 3 12B & gemma3 & 12.0000 & 8b_plus \\
+gemma3_12b & Primary: ER+RR−Native & retrieval_recall & Native & ER+RR & 0.1343 & 0.0620 & 0.0167 & 0.1074 & 46.2069 & 90 & Gemma 3 12B & gemma3 & 12.0000 & 8b_plus \\
+gemma3_12b & Primary: ER+RR−Native & reciprocal_rank & Native & ER+RR & 0.2565 & 0.1139 & 0.0398 & 0.1898 & 44.4043 & 90 & Gemma 3 12B & gemma3 & 12.0000 & 8b_plus \\
+gemma3_12b & Primary: ER+RR−Native & complete_chain_recall_at_5 & Native & ER+RR & 0.0000 & 0.0444 & 0.0111 & 0.0889 & — & 90 & Gemma 3 12B & gemma3 & 12.0000 & 8b_plus \\
+gemma3_12b & Secondary: ER−Native & retrieval_hit & Native & ER & 0.3111 & 0.1111 & 0.0222 & 0.2000 & 35.7143 & 90 & Gemma 3 12B & gemma3 & 12.0000 & 8b_plus \\
+gemma3_12b & Secondary: ER−Native & retrieval_recall & Native & ER & 0.1343 & 0.0565 & 0.0120 & 0.1009 & 42.0690 & 90 & Gemma 3 12B & gemma3 & 12.0000 & 8b_plus \\
+gemma3_12b & Secondary: ER−Native & reciprocal_rank & Native & ER & 0.2565 & 0.1083 & 0.0352 & 0.1833 & 42.2383 & 90 & Gemma 3 12B & gemma3 & 12.0000 & 8b_plus \\
+gemma3_12b & Secondary: ER−Native & complete_chain_recall_at_5 & Native & ER & 0.0000 & 0.0444 & 0.0111 & 0.0889 & — & 90 & Gemma 3 12B & gemma3 & 12.0000 & 8b_plus \\
+gemma3_12b & Incremental: ER+RR−ER & retrieval_hit & ER & ER+RR & 0.4222 & 0.0111 & 0.0000 & 0.0333 & 2.6316 & 90 & Gemma 3 12B & gemma3 & 12.0000 & 8b_plus \\
+gemma3_12b & Incremental: ER+RR−ER & retrieval_recall & ER & ER+RR & 0.1907 & 0.0056 & 0.0000 & 0.0167 & 2.9126 & 90 & Gemma 3 12B & gemma3 & 12.0000 & 8b_plus \\
+gemma3_12b & Incremental: ER+RR−ER & reciprocal_rank & ER & ER+RR & 0.3648 & 0.0056 & 0.0000 & 0.0167 & 1.5228 & 90 & Gemma 3 12B & gemma3 & 12.0000 & 8b_plus \\
+gemma3_12b & Incremental: ER+RR−ER & complete_chain_recall_at_5 & ER & ER+RR & 0.0444 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 90 & Gemma 3 12B & gemma3 & 12.0000 & 8b_plus \\
+\bottomrule
+\end{tabular}

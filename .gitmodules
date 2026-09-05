@@ -1,0 +1,6 @@
+[submodule "LightRAG"]
+	path = LightRAG
+	url = https://github.com/HKUDS/LightRAG.git
+[submodule "MultiHop-RAG"]
+	path = MultiHop-RAG
+	url = https://github.com/yixuantt/MultiHop-RAG.git
