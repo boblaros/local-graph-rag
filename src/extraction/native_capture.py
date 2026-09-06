@@ -505,7 +505,7 @@ def make_instrumented_generic_complete(
         # LightRAG's role queue. Never infer it from worker-task context:
         # workers are long lived, so inherited context may belong to an older
         # extraction when the same model later handles a merge summary.
-        trace = kwargs.pop("_pilot_extraction_trace", None)
+        trace = kwargs.pop("_extraction_trace", None)
         if not isinstance(trace, ExtractionTrace):
             trace = None
         if trace is None:
@@ -584,7 +584,7 @@ def make_instrumented_ollama_complete(
     ) -> str | AsyncIterator[str]:
         del enable_cot  # The native provider intentionally ignores this option.
         kwargs = dict(kwargs)
-        trace = kwargs.pop("_pilot_extraction_trace", None)
+        trace = kwargs.pop("_extraction_trace", None)
         if not isinstance(trace, ExtractionTrace):
             trace = None
         stream = bool(kwargs.get("stream"))
@@ -892,7 +892,7 @@ class ExtractionAuditAdapter(AbstractAsyncContextManager["ExtractionAuditAdapter
                     return await original(*args, **kwargs)
 
                 async def traced_role_func(*role_args: Any, **role_kwargs: Any) -> Any:
-                    role_kwargs["_pilot_extraction_trace"] = trace
+                    role_kwargs["_extraction_trace"] = trace
                     return await role_func(*role_args, **role_kwargs)
 
                 # Passing the trace as a private queued kwarg is necessary:
@@ -1018,7 +1018,7 @@ class ExtractionAuditAdapter(AbstractAsyncContextManager["ExtractionAuditAdapter
         await self.restore()
 
 
-_PILOT_EXTRACTION_ADAPTER_ATTRIBUTE = "_pilot_extraction_audit_adapter"
+_EXTRACTION_ADAPTER_ATTRIBUTE = "_extraction_audit_adapter"
 _LIGHTRAG_HARNESS_KEYS = {
     "provider",
     "embedding_provider",
@@ -1433,6 +1433,7 @@ def build_lightrag(
     # rather than by working_dir. Use a run-derived namespace as well as the
     # run-specific directory, so two models opened in one Python process cannot
     # share storage state. Physical files remain under run/workspace/.
+    # Existing run artifacts record this workspace prefix.
     workspace_name = f"pilot_{sha256_text(frozen_run.lock.run_id)[:20]}"
     addon_params = dict(settings.get("addon_params") or {})
     rag = LightRAG(
@@ -1509,14 +1510,14 @@ def build_lightrag(
             model_digest=config.builder_model_digest,
             provider=provider,
         )
-        setattr(rag, _PILOT_EXTRACTION_ADAPTER_ATTRIBUTE, adapter)
+        setattr(rag, _EXTRACTION_ADAPTER_ATTRIBUTE, adapter)
     return rag
 
 
 def get_extraction_adapter(rag: Any) -> ExtractionAuditAdapter:
     """Return the capture adapter attached by ``build_lightrag(..., True)``."""
 
-    adapter = getattr(rag, _PILOT_EXTRACTION_ADAPTER_ATTRIBUTE, None)
+    adapter = getattr(rag, _EXTRACTION_ADAPTER_ATTRIBUTE, None)
     if not isinstance(adapter, ExtractionAuditAdapter):
         raise RuntimeError("LightRAG was not built with extraction_capture=True")
     return adapter

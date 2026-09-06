@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Thin executable entry point for the importable experiment harness."""
+"""Command-line entry point for the experiment."""
 
 from pathlib import Path
 import sys

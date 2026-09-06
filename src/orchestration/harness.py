@@ -629,7 +629,7 @@ class ExperimentHarness:
         base_extraction_sha256: str,
     ) -> tuple[QualityGateReport, dict[str, Any]]:
         from lightrag import QueryParam
-        from src.graph.native_lightrag import build_lightrag
+        from src.extraction.native_capture import build_lightrag
         from src.graph import PublicLightRAGAdapter
 
         _, chunks, _, _ = load_staged_snapshot(paths.staging_dir)
@@ -1921,7 +1921,7 @@ class ExperimentHarness:
                 physical_attempt=claim.record.attempt_count,
             )
             from lightrag import QueryParam
-            from src.graph.native_lightrag import build_lightrag
+            from src.extraction.native_capture import build_lightrag
 
             def rag_factory() -> Any:
                 return build_lightrag(frozen, extraction_capture=False)
@@ -2284,7 +2284,7 @@ class ExperimentHarness:
                 physical_attempt=claim.record.attempt_count,
             )
             from lightrag import QueryParam
-            from src.graph.native_lightrag import build_lightrag
+            from src.extraction.native_capture import build_lightrag
 
             def rag_factory() -> Any:
                 return build_lightrag(frozen, extraction_capture=False)
@@ -2478,7 +2478,7 @@ class ExperimentHarness:
         """Run context-only retrieval for all 120 questions in one variant."""
 
         from src.config.native_runtime import load_frozen_run
-        from src.graph.native_lightrag import build_lightrag
+        from src.extraction.native_capture import build_lightrag
         from src.retrieval import run_retrieval
 
         self.config.assert_ready(

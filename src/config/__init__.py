@@ -1,4 +1,4 @@
-"""Public configuration API for the experiment harness."""
+"""Configuration API for the experiment."""
 
 from .loader import LoadedExperimentConfig, load_experiment_config
 from .resolver import (

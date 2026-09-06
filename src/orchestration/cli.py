@@ -20,7 +20,6 @@ from .artifacts import jsonable, write_immutable_json
 from .harness import ExperimentHarness
 from .lineage import full_config_sha256, sha256_json
 from .preflight import validate_preflight
-from .smoke import run_local_public_api_smoke
 
 
 def _print(value: Any) -> None:
@@ -50,7 +49,7 @@ def _reclaim_argument(parser: argparse.ArgumentParser) -> None:
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="experiment",
-        description="Reproducible Native LightRAG vs ER vs ER+RR harness",
+        description="Native LightRAG, ER, and ER+RR experiment",
     )
     parser.add_argument(
         "--config", default="configs/experiment.yaml", help="Experiment YAML"
@@ -69,12 +68,8 @@ def build_parser() -> argparse.ArgumentParser:
     )
     preflight.add_argument("--report", help="Optional immutable report path")
 
-    subparsers.add_parser(
-        "smoke", help="Run a tiny network-free real-LightRAG public API smoke"
-    ).add_argument("--report", help="Optional immutable report path")
-
     native = subparsers.add_parser(
-        "native-build", help="Sole extraction plus Native graph build/staging"
+        "native-build", help="Build the Native graph from one extraction"
     )
     _builder_argument(native)
     _reclaim_argument(native)
@@ -97,7 +92,7 @@ def build_parser() -> argparse.ArgumentParser:
     _reclaim_argument(er_materialize)
 
     rr_plan = subparsers.add_parser(
-        "rr-plan", help="Freeze same-chunk missing-pair candidates without LLM calls"
+        "rr-plan", help="Create RR candidates from missing same-chunk entity pairs"
     )
     _builder_argument(rr_plan)
     _reclaim_argument(rr_plan)
@@ -264,13 +259,6 @@ async def _resume_all(
 
 
 async def _async_main(args: argparse.Namespace) -> int:
-    if args.command == "smoke":
-        report = await run_local_public_api_smoke()
-        if args.report:
-            write_immutable_json(Path(args.report).expanduser().resolve(), report)
-        _print(report)
-        return 0 if report["passed"] else 1
-
     loaded = load_experiment_config(args.config)
     if args.command == "preflight":
         return await _preflight_command(args, loaded)

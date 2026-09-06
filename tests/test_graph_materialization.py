@@ -267,7 +267,6 @@ def test_workspace_export_is_not_capped_at_one_thousand_nodes() -> None:
 
 def test_public_api_materialization_finalize_reopen_export_and_smoke():
     state = _PersistentWorkspace()
-    exported: list[Any] = []
 
     async def exercise():
         return await materialize_finalize_reopen(
@@ -295,7 +294,6 @@ def test_public_api_materialization_finalize_reopen_export_and_smoke():
                 {"query": "unanswerable", "expected_status": "failure"},
             ],
             query_param_factory=lambda mode: {"mode": mode, "only_need_context": True},
-            export_callback=exported.append,
         )
 
     outcome = asyncio.run(exercise())
@@ -319,7 +317,6 @@ def test_public_api_materialization_finalize_reopen_export_and_smoke():
     assert outcome.stage.description_truncations == []
     assert outcome.stage.aliases_audit[0]["storage_policy"] == "audit_only"
     assert "aliases" not in state.nodes["Alpha"]
-    assert exported == [outcome.reopened_snapshot]
     assert outcome.parity_report.exact_chunk_identity
     assert outcome.parity_report.extraction_reused_without_builder_call
     assert not outcome.parity_report.custom_kg_chunk_path_used

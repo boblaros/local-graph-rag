@@ -1,4 +1,4 @@
-"""Immutable extraction staging for the experiment harness."""
+"""Extraction records and staging for the experiment."""
 
 from .models import (
     EXTRACTION_SCHEMA_VERSION,

@@ -1,4 +1,4 @@
-"""Strict, versioned configuration for the generalized experiment harness."""
+"""Configuration models for the fixed experiment."""
 
 from __future__ import annotations
 

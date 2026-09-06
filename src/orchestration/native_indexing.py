@@ -9,8 +9,6 @@ while extraction calls and event logs are append-only JSONL.
 from __future__ import annotations
 
 import argparse
-import asyncio
-import json
 import os
 import re
 import shutil
@@ -22,11 +20,9 @@ from pathlib import Path
 from typing import Any
 
 from src.config.native_runtime import (
-    DEFAULT_RUNS_ROOT,
     FrozenRun,
     build_run_config,
     lightrag_source_identity,
-    load_frozen_run,
     load_run_config,
     make_run_id,
     prepare_run,
@@ -35,10 +31,12 @@ from src.config.native_runtime import (
 )
 from src.config.native_support.hashes import sha256_text
 from src.config.native_support.io_utils import read_jsonl
-from src.config.ollama_identity import resolve_ollama_model_identity
-from src.extraction.native_capture import get_extraction_adapter
+from src.extraction.native_capture import (
+    build_lightrag,
+    get_extraction_adapter,
+    resolve_ollama_model_identity,
+)
 from src.graph.native_export import export_workspace
-from src.graph.native_lightrag import build_lightrag
 
 
 INDEXING_STAGE = "indexing"
@@ -296,7 +294,7 @@ async def _reconcile_status(
     status_store: Any,
     documents: Sequence[Mapping[str, Any]],
 ) -> None:
-    """Reconcile a committed LightRAG document after a harness interruption."""
+    """Reconcile a committed LightRAG document after an interrupted run."""
 
     for document in documents:
         document_id = str(document["document_id"])
@@ -507,7 +505,7 @@ async def run_indexing(
                         ids=claimed_ids,
                         file_paths=claimed_ids,
                         track_id=(
-                            f"pilot-{frozen_run.lock.run_id[:48]}-"
+                            f"experiment-{frozen_run.lock.run_id[:48]}-"
                             f"{start // batch_size:04d}"
                         ),
                     )
@@ -649,62 +647,4 @@ async def run_indexing(
                 )
 
 
-async def _open_run(args: argparse.Namespace) -> FrozenRun:
-    if args.run_dir:
-        frozen_run = load_frozen_run(args.run_dir)
-        _validate_frozen_runtime_identity(frozen_run)
-        return frozen_run
-    return await _preflight_config(args)
-
-
-def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Run resumable Native LightRAG indexing")
-    source = parser.add_mutually_exclusive_group(required=True)
-    source.add_argument("--run-dir", help="existing runs/<run_id>")
-    source.add_argument("--config", help="JSON RunConfig to freeze before execution")
-    parser.add_argument(
-        "--runs-root",
-        default=str(DEFAULT_RUNS_ROOT),
-        help="destination used with --config",
-    )
-    parser.add_argument(
-        "--limit",
-        type=int,
-        default=None,
-        help="index only the first N documents",
-    )
-    parser.add_argument(
-        "--no-export",
-        action="store_true",
-        help="leave chunk/graph export for export_workspace.py",
-    )
-    parser.add_argument(
-        "--reclaim-running",
-        action="store_true",
-        help="explicitly reclaim SQLite rows left running after a crashed process",
-    )
-    return parser
-
-
-async def _async_main(args: argparse.Namespace) -> dict[str, Any]:
-    frozen_run = await _open_run(args)
-    return await run_indexing(
-        frozen_run,
-        export_after_indexing=not args.no_export,
-        reclaim_running=args.reclaim_running,
-        document_limit=args.limit,
-    )
-
-
-def main(argv: Sequence[str] | None = None) -> int:
-    args = build_parser().parse_args(argv)
-    result = asyncio.run(_async_main(args))
-    print(json.dumps(result, ensure_ascii=False, sort_keys=True))
-    return 0
-
-
-if __name__ == "__main__":  # pragma: no cover
-    raise SystemExit(main())
-
-
-__all__ = ["BatchIndexingError", "main", "run_indexing"]
+__all__ = ["BatchIndexingError", "run_indexing"]

@@ -1,34 +1,17 @@
-"""Export a Native LightRAG workspace into immutable JSONL artifacts.
+"""Export Native LightRAG chunks and graph records to JSONL.
 
-This module is pinned to public storage interfaces available in the local
-LightRAG checkout.  In particular, it does not inspect storage filenames:
-
-* document status is enumerated with ``get_docs_paginated``;
-* actual chunks are fetched with ``text_chunks.get_by_ids``;
-* the graph is enumerated with ``get_all_nodes`` / ``get_all_edges``; and
-* uncapped graph provenance comes from ``entity_chunks`` and
-  ``relation_chunks``.
-
-Exports are append-only and idempotent by artifact key.  If a prior record has
-the same key but different immutable content, the exporter fails loudly rather
-than appending a conflicting snapshot to the same run.
+The exporter reads through LightRAG's storage interfaces rather than depending
+on storage filenames. Existing records are reused only when their content
+matches.
 """
 
 from __future__ import annotations
 
-import argparse
-import asyncio
-import json
 from collections.abc import Iterable, Mapping, Sequence
 from dataclasses import asdict, is_dataclass
 from pathlib import Path
 from typing import Any
 
-from src.config.native_runtime import (
-    FrozenRun,
-    load_frozen_run,
-    validate_frozen_inputs,
-)
 from src.config.native_support.hashes import (
     canonical_json,
     sha256_text,
@@ -466,48 +449,4 @@ async def export_workspace(
     }
 
 
-def _resolve_documents_path(frozen_run: FrozenRun) -> Path:
-    documents_path, _ = validate_frozen_inputs(frozen_run)
-    return documents_path
-
-
-async def _run_cli(args: argparse.Namespace) -> dict[str, int]:
-    frozen_run = load_frozen_run(args.run_dir)
-    from src.graph.native_lightrag import build_lightrag
-
-    rag = build_lightrag(frozen_run, extraction_capture=False)
-    initialized = False
-    try:
-        await rag.initialize_storages()
-        initialized = True
-        return await export_workspace(
-            rag,
-            run_id=frozen_run.lock.run_id,
-            run_dir=frozen_run.paths.run_dir,
-            documents_path=_resolve_documents_path(frozen_run),
-        )
-    finally:
-        if initialized:
-            await rag.finalize_storages()
-
-
-def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(
-        description="Export actual LightRAG chunks and graph from a frozen run"
-    )
-    parser.add_argument("--run-dir", required=True, help="runs/<run_id>")
-    return parser
-
-
-def main(argv: Sequence[str] | None = None) -> int:
-    args = build_parser().parse_args(argv)
-    result = asyncio.run(_run_cli(args))
-    print(json.dumps(result, ensure_ascii=False, sort_keys=True))
-    return 0
-
-
-if __name__ == "__main__":  # pragma: no cover
-    raise SystemExit(main())
-
-
-__all__ = ["export_workspace", "main"]
+__all__ = ["export_workspace"]

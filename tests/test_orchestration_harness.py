@@ -55,7 +55,7 @@ def _harness(tmp_path: Path) -> ExperimentHarness:
     return ExperimentHarness(LoadedExperimentConfig(config=config, path=TEMPLATE))
 
 
-def test_cli_exposes_every_lifecycle_subcommand() -> None:
+def test_cli_exposes_experiment_commands() -> None:
     parser = build_parser()
     commands = {
         action.dest: set(action.choices or {})
@@ -64,7 +64,6 @@ def test_cli_exposes_every_lifecycle_subcommand() -> None:
     }
     assert commands["command"] == {
         "preflight",
-        "smoke",
         "native-build",
         "er-plan",
         "er-quality-gate",

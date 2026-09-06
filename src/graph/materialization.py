@@ -142,17 +142,6 @@ async def _resolve_factory(factory: Callable[[], Any | Awaitable[Any]]) -> Any:
     return await value if inspect.isawaitable(value) else value
 
 
-async def _call_export_callback(
-    callback: Callable[[WorkspaceSnapshot], Any | Awaitable[Any]] | None,
-    snapshot: WorkspaceSnapshot,
-) -> None:
-    if callback is None:
-        return
-    result = callback(snapshot)
-    if inspect.isawaitable(result):
-        await result
-
-
 async def materialize_graph(
     adapter: PublicLightRAGAdapter,
     *,
@@ -319,7 +308,6 @@ async def materialize_finalize_reopen(
     description_policy: DescriptionPolicy = DescriptionPolicy(),
     smoke_cases: Sequence[Mapping[str, Any]] = (),
     query_param_factory: Callable[[str], Any] | None = None,
-    export_callback: Callable[[WorkspaceSnapshot], Any | Awaitable[Any]] | None = None,
 ) -> MaterializationOutcome:
     """Build a graph, reopen it, export it, and run optional retrieval checks.
 
@@ -374,7 +362,6 @@ async def materialize_finalize_reopen(
             if smoke_cases
             else None
         )
-        await _call_export_callback(export_callback, snapshot)
     finally:
         if reopened_initialized:
             await reopened_adapter.finalize()

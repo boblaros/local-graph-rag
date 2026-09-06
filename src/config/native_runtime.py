@@ -40,8 +40,6 @@ from .native_support.status import StatusStore
 
 
 EXPERIMENT_DIR = Path(__file__).resolve().parents[2]
-# Retained only to resolve configuration locks created before the final harness.
-PILOT_DIR = EXPERIMENT_DIR / "pilot"
 DEFAULT_RUNS_ROOT = EXPERIMENT_DIR / "runs"
 CONFIG_HASH_ALGORITHM = "sha256-canonical-json-v1"
 _RUN_ID_RE = re.compile(r"^[a-z0-9][a-z0-9._-]*$")
@@ -266,20 +264,11 @@ def fingerprint_inputs(
             "configured input_fingerprints do not match the current input data"
         )
 
-    try:
-        relative_base = resolved_base.relative_to(PILOT_DIR)
-    except ValueError:
-        resolution = {
-            "base_kind": "absolute",
-            "base_path": str(resolved_base),
-            "portable": False,
-        }
-    else:
-        resolution = {
-            "base_kind": "pilot_relative",
-            "base_path": relative_base.as_posix() or ".",
-            "portable": True,
-        }
+    resolution = {
+        "base_kind": "absolute",
+        "base_path": str(resolved_base),
+        "portable": False,
+    }
     existing_resolution = model.metadata.get("input_resolution")
     if existing_resolution is not None and existing_resolution != resolution:
         raise ValueError("configured input_resolution does not match the config source")
@@ -336,11 +325,6 @@ def _resolved_input_base(config: RunConfig) -> Path:
     raw_path = resolution.get("base_path")
     if not isinstance(raw_path, str) or not raw_path:
         raise ValueError("frozen input_resolution has no base_path")
-    if kind == "pilot_relative":
-        relative = Path(raw_path)
-        if relative.is_absolute() or ".." in relative.parts:
-            raise ValueError("unsafe pilot-relative input base")
-        return (PILOT_DIR / relative).resolve()
     if kind == "absolute":
         absolute = Path(raw_path)
         if not absolute.is_absolute():
@@ -897,7 +881,6 @@ __all__ = [
     "DEFAULT_PACKAGE_NAMES",
     "DEFAULT_RUNS_ROOT",
     "DEFAULT_SAFE_ENV_KEYS",
-    "PILOT_DIR",
     "FrozenRun",
     "RunPaths",
     "assert_config_has_no_secrets",

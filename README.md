@@ -1,6 +1,6 @@
 # Native LightRAG, ER, and ER+RR experiment
 
-This repository contains the experiment harness used in the research that studies LLM-based graph construction.
+This repository contains the research implementation used to study LLM-based graph construction.
 
 ```text
 Native -> ER -> ER+RR

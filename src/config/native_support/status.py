@@ -1,7 +1,7 @@
 """SQLite-backed resumable execution status for the Native runtime.
 
-The database intentionally stores only orchestration state. Raw artifacts,
-metrics, configuration, and model output never enter SQLite.
+The database stores only stage state. Raw artifacts, metrics, configuration,
+and model output never enter SQLite.
 """
 
 from __future__ import annotations
