@@ -64,10 +64,7 @@ def test_answerable_question_retrieval_and_exact_answer_metrics() -> None:
 
     assert metrics["retrieval_hit"] is True
     assert metrics["retrieval_recall"] == 1.0
-    assert metrics["retrieval_recall_at_5"] == 0.5
-    assert metrics["retrieval_recall_at_10"] == 1.0
     assert metrics["complete_chain_recall_at_5"] is False
-    assert metrics["complete_chain_recall_at_10"] is True
     assert metrics["answer_exact_match"] is True
     assert metrics["token_f1"] == 1.0
     assert metrics["unanswerable_correct"] is None
@@ -178,9 +175,6 @@ def test_downstream_aggregation_reports_null_metrics_and_question_types() -> Non
 
     summary = aggregate_downstream_metrics(rows)
 
-    assert summary["unanswerable_precision"] is None
-    assert summary["unanswerable_recall"] == 0.0
-    assert summary["unanswerable_f1"] is None
     assert summary["hallucination_rate"] == 1.0
     assert summary["over_abstention_rate"] == 0.0
     assert summary["retrieval_latency_ms_total"] == 15
@@ -249,10 +243,9 @@ def test_ranked_retrieval_produces_first_rank_and_mrr() -> None:
 
     assert metrics["first_relevant_rank"] == 2
     assert metrics["reciprocal_rank"] == 0.5
-    assert metrics["reciprocal_rank_at_5"] == 0.5
 
 
-def test_failures_are_zero_in_primary_and_excluded_from_complete_case() -> None:
+def test_failures_are_zero_and_retained_in_micro() -> None:
     question = {
         "question_id": "q-failed",
         "question_type": "inference",
@@ -284,13 +277,12 @@ def test_failures_are_zero_in_primary_and_excluded_from_complete_case() -> None:
     assert row["token_f1"] == 0.0
     assert row["answer_correct"] is False
     assert row["hallucination"] is None
-    assert row["complete_case"] is False
-    assert summary["analyses"]["primary"]["micro"]["answer_correct"] == 0.0
-    assert summary["analyses"]["secondary"]["micro"] is None
-    assert summary["analyses"]["secondary"]["excluded_failure_count"] == 1
+    assert summary["answer_correct"] == 0.0
+    assert summary["answer_failure_count"] == 1
+    assert "analyses" not in summary
 
 
-def test_macro_source_weighted_and_latency_quantiles_are_reported() -> None:
+def test_micro_by_type_and_latency_quantiles_are_reported() -> None:
     rows = []
     for question_type, score, latency in (
         ("inference", 1.0, 10.0),
@@ -310,11 +302,9 @@ def test_macro_source_weighted_and_latency_quantiles_are_reported() -> None:
 
     summary = aggregate_downstream_metrics(rows)
 
-    assert summary["analyses"]["primary"]["micro"]["answer_correct"] == 0.5
-    assert summary["analyses"]["primary"]["macro"]["answer_correct"] == 0.5
-    expected = (816 + 301) / 2556
-    assert summary["analyses"]["primary"]["source_weighted"][
-        "answer_correct"
-    ] == pytest.approx(expected)
+    assert summary["answer_correct"] == 0.5
+    assert summary["aggregation"] == "micro"
+    assert "analyses" not in summary
+    assert summary["by_question_type"]["inference"]["answer_correct"] == 1.0
     assert summary["retrieval_latency_ms_median"] == 25.0
     assert summary["retrieval_latency_ms_p90"] == pytest.approx(37.0)

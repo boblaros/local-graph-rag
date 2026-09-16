@@ -79,7 +79,7 @@ from .status import StageExpectation, StageStatus, StageStatusStore
 GraphRegime = Literal[
     "native_lightrag", "advanced_lightrag_er", "advanced_lightrag_er_rr"
 ]
-EVALUATION_SCHEMA_VERSION = "5.0.0"
+EVALUATION_SCHEMA_VERSION = "6.0.0"
 
 
 @dataclass(frozen=True)
@@ -264,8 +264,6 @@ def _evaluation_identity_sha256(config: Any) -> str:
         DEFAULT_BOOTSTRAP_SEED,
         DEFAULT_CONFIDENCE_LEVEL,
         DEFAULT_PAIRED_METRIC_FIELDS,
-        DEFAULT_RETRIEVAL_CUTOFFS,
-        SOURCE_QUESTION_TYPE_WEIGHTS,
     )
 
     return sha256_json(
@@ -273,14 +271,14 @@ def _evaluation_identity_sha256(config: Any) -> str:
             "schema_version": EVALUATION_SCHEMA_VERSION,
             "full_config_sha256": full_config_sha256(config),
             "comparison_plan": CASCADE_COMPARISON_PLAN,
-            "retrieval_cutoffs": DEFAULT_RETRIEVAL_CUTOFFS,
             "paired_metric_fields": DEFAULT_PAIRED_METRIC_FIELDS,
+            "aggregation": "micro",
+            "estimand": "intention_to_evaluate",
+            "complete_chain_cutoff": 5,
             "bootstrap_samples": DEFAULT_BOOTSTRAP_SAMPLES,
             "bootstrap_confidence_level": DEFAULT_CONFIDENCE_LEVEL,
             "bootstrap_seed": DEFAULT_BOOTSTRAP_SEED,
             "bootstrap_stratification": "question_type",
-            "extraction_bootstrap_cluster_unit": "document_id",
-            "source_question_type_weights": SOURCE_QUESTION_TYPE_WEIGHTS,
         }
     )
 
@@ -298,44 +296,6 @@ def _primary_analysis_identity_sha256(config: Any) -> str:
             "comparison_plan": CASCADE_COMPARISON_PLAN,
             "expected_builder_keys": [builder.key for builder in config.builders],
             "expected_question_count": config.corpus.expected_questions,
-        }
-    )
-
-
-def _exploratory_identity_sha256(config: Any) -> str:
-    from src.evaluation import (
-        CASCADE_COMPARISON_PLAN,
-        DEFAULT_BOOTSTRAP_SAMPLES,
-        DEFAULT_BOOTSTRAP_SEED,
-        DEFAULT_CONFIDENCE_LEVEL,
-        DEFAULT_PAIRED_METRIC_FIELDS,
-        EXPLORATORY_BINARY_METRICS,
-        EXPLORATORY_SCHEMA_VERSION,
-        builder_metadata_from_config,
-    )
-
-    return sha256_json(
-        {
-            "schema_version": EXPLORATORY_SCHEMA_VERSION,
-            "evaluation_identity_sha256": _evaluation_identity_sha256(config),
-            "primary_analysis_identity_sha256": _primary_analysis_identity_sha256(
-                config
-            ),
-            "comparison_plan": CASCADE_COMPARISON_PLAN,
-            "graph_regimes": [
-                "native_lightrag",
-                "advanced_lightrag_er",
-                "advanced_lightrag_er_rr",
-            ],
-            "metric_fields": DEFAULT_PAIRED_METRIC_FIELDS,
-            "binary_metric_fields": sorted(EXPLORATORY_BINARY_METRICS),
-            "bootstrap_samples": DEFAULT_BOOTSTRAP_SAMPLES,
-            "bootstrap_confidence_level": DEFAULT_CONFIDENCE_LEVEL,
-            "bootstrap_seed": DEFAULT_BOOTSTRAP_SEED,
-            "bootstrap_stratification": "question_type",
-            "mcnemar": "exact_two_sided",
-            "holm_scope": "separate_by_estimand_graph_regime_metric",
-            "builder_metadata": builder_metadata_from_config(config.builders),
         }
     )
 
@@ -2694,18 +2654,13 @@ class ExperimentHarness:
             DEFAULT_BOOTSTRAP_SEED,
             DEFAULT_CONFIDENCE_LEVEL,
             DEFAULT_PAIRED_METRIC_FIELDS,
-            DEFAULT_RETRIEVAL_CUTOFFS,
-            SOURCE_QUESTION_TYPE_WEIGHTS,
             aggregate_downstream_metrics,
             compute_downstream_metrics,
             compute_er_metrics,
-            bootstrap_extraction_metrics,
             compute_extraction_efficiency,
             compute_extraction_metrics,
             compute_graph_topology,
-            paired_variant_deltas,
             paired_regime_deltas,
-            summarize_paired_deltas,
             summarize_regime_deltas,
         )
 
@@ -2751,27 +2706,9 @@ class ExperimentHarness:
             )
             variant_rows[regime] = rows
             variant_summaries[regime] = aggregate_downstream_metrics(rows)
-        secondary_paired = paired_variant_deltas(
-            variant_rows["native_lightrag"],
-            variant_rows["advanced_lightrag_er"],
-            metric_fields=DEFAULT_PAIRED_METRIC_FIELDS,
-        )
-        secondary_summary = summarize_paired_deltas(
-            secondary_paired,
-            metric_fields=DEFAULT_PAIRED_METRIC_FIELDS,
-            bootstrap_samples=DEFAULT_BOOTSTRAP_SAMPLES,
-            confidence_level=DEFAULT_CONFIDENCE_LEVEL,
-            seed=DEFAULT_BOOTSTRAP_SEED,
-        )
         comparison_specs = {
-            "incremental_ablation": (
-                "advanced_lightrag_er",
-                "advanced_lightrag_er_rr",
-            ),
-            "primary": (
-                "native_lightrag",
-                "advanced_lightrag_er_rr",
-            ),
+            role: (declaration["left_regime"], declaration["right_regime"])
+            for role, declaration in CASCADE_COMPARISON_PLAN.items()
         }
         generic_paired: dict[str, list[dict[str, Any]]] = {}
         generic_summaries: dict[str, dict[str, Any]] = {}
@@ -2825,24 +2762,14 @@ class ExperimentHarness:
             "builder_key": builder_key,
             "base_run_id": paths.base_run_id,
             "evaluation_parameters": {
-                "retrieval_cutoffs": list(DEFAULT_RETRIEVAL_CUTOFFS),
                 "paired_bootstrap_samples": DEFAULT_BOOTSTRAP_SAMPLES,
                 "paired_bootstrap_confidence_level": DEFAULT_CONFIDENCE_LEVEL,
                 "paired_bootstrap_seed": DEFAULT_BOOTSTRAP_SEED,
                 "paired_bootstrap_stratification": "question_type",
-                "extraction_bootstrap_cluster_unit": "document_id",
-                "source_question_type_weights": SOURCE_QUESTION_TYPE_WEIGHTS,
             },
             "extraction": {
                 **compute_extraction_metrics(chunks),
                 "efficiency": compute_extraction_efficiency(extraction_calls),
-                "document_cluster_bootstrap": bootstrap_extraction_metrics(
-                    chunks,
-                    extraction_calls,
-                    bootstrap_samples=DEFAULT_BOOTSTRAP_SAMPLES,
-                    confidence_level=DEFAULT_CONFIDENCE_LEVEL,
-                    seed=DEFAULT_BOOTSTRAP_SEED,
-                ),
             },
             "entity_resolution": er_metrics,
             "native_topology": native_topology,
@@ -2858,10 +2785,10 @@ class ExperimentHarness:
             "downstream": variant_summaries,
             "paired_comparisons": {
                 "primary": generic_summaries["primary"],
-                "secondary": secondary_summary,
+                "secondary": generic_summaries["secondary"],
                 "incremental_ablation": generic_summaries["incremental_ablation"],
             },
-            "paired_question_count": len(secondary_paired),
+            "paired_question_count": len(variant_rows["native_lightrag"]),
             "comparison_plan": {
                 role: {
                     **declaration,
@@ -2884,7 +2811,7 @@ class ExperimentHarness:
         )
         report_path = metrics_dir / f"summary.{condition_hash}.json"
         write_immutable_jsonl(paired_primary_path, generic_paired["primary"])
-        write_immutable_jsonl(paired_secondary_path, secondary_paired)
+        write_immutable_jsonl(paired_secondary_path, generic_paired["secondary"])
         write_immutable_jsonl(
             paired_incremental_path, generic_paired["incremental_ablation"]
         )
@@ -3019,7 +2946,7 @@ class ExperimentHarness:
                     path,
                     logical_name=f"evaluation/{name}",
                     schema_version=(
-                        "3.0.0"
+                        "4.0.0"
                         if name.endswith("question_metrics")
                         else EVALUATION_SCHEMA_VERSION
                     ),
@@ -3076,145 +3003,72 @@ class ExperimentHarness:
             },
         )
 
-    def exploratory_analysis(self) -> StageOutcome:
-        """Build the 66-pair/family/scale/DiD global exploratory report."""
+    def analysis_manifest(self, source_report: Path | None = None) -> StageOutcome:
+        """Register evaluated inputs for notebooks without cross-builder tests."""
+        from src.evaluation import build_analysis_manifest
 
-        from src.evaluation import (
-            DEFAULT_BOOTSTRAP_SAMPLES,
-            DEFAULT_BOOTSTRAP_SEED,
-            DEFAULT_CONFIDENCE_LEVEL,
-            DEFAULT_PAIRED_METRIC_FIELDS,
-            DOWNSTREAM_METRICS_SCHEMA_VERSION,
-            EXPLORATORY_SCHEMA_VERSION,
-            PRIMARY_ANALYSIS_SCHEMA_VERSION,
-            builder_metadata_from_config,
-            compute_exploratory_analysis,
-            summarize_builder_artifacts,
-        )
-
-        for builder in self.config.builders:
-            self.config.assert_ready(
-                builder_key=builder.key, require_er=True, require_rr=True
-            )
-
-        evaluation_hash = _evaluation_identity_sha256(self.config)[:16]
-        primary_hash = _primary_analysis_identity_sha256(self.config)[:16]
-        exploratory_hash = _exploratory_identity_sha256(self.config)[:16]
-        primary_path = (
-            self.loaded.runs_root
-            / "analysis"
-            / f"prespecified_cascade_comparisons.{primary_hash}.json"
-        )
-        if not primary_path.exists():
-            raise RuntimeError(
-                "exploratory analysis requires the completed primary-analysis artifact"
-            )
-        condition_rows: dict[str, dict[str, list[dict[str, Any]]]] = {}
-        builder_summaries: dict[str, dict[str, Any]] = {}
-        input_paths: dict[str, Path] = {"primary_analysis": primary_path}
-        for builder in self.config.builders:
-            paths = self.condition_paths(builder.key)
-            condition_rows[builder.key] = {}
-            summary_path = paths.er_dir / "metrics" / f"summary.{evaluation_hash}.json"
-            if not summary_path.exists():
-                raise RuntimeError(
-                    f"exploratory analysis requires builder summary: {builder.key}"
-                )
-            builder_summaries[builder.key] = read_json(summary_path)
-            input_paths[f"{builder.key}/summary"] = summary_path
-            for regime in (
-                "native_lightrag",
-                "advanced_lightrag_er",
-                "advanced_lightrag_er_rr",
+        if source_report is not None:
+            source = read_json(source_report)
+            registry = source["input_artifacts"]
+            lineage = source.get("lineage", {})
+            if (
+                lineage.get("questions_sha256") != self.config.corpus.questions_sha256
+                or lineage.get("subset_id") != self.config.corpus.subset_id
             ):
-                metric_path = _metric_file(
-                    self.config,
-                    paths,
-                    regime,
-                    stem="question_metrics",
-                    suffix=".jsonl",
+                raise ValueError("source report does not match the frozen corpus")
+        else:
+            registry = {}
+            for builder in self.config.builders:
+                paths = self.condition_paths(builder.key)
+                summary = (
+                    paths.er_dir
+                    / "metrics"
+                    / f"summary.{_evaluation_identity_sha256(self.config)[:16]}.json"
                 )
-                if not metric_path.exists():
-                    raise RuntimeError(
-                        "exploratory analysis requires completed question metrics: "
-                        f"{builder.key}/{regime}"
+                registry[f"{builder.key}/summary"] = fingerprint_artifact(
+                    summary,
+                    logical_name=f"analysis/input/{builder.key}/summary",
+                    schema_version=EVALUATION_SCHEMA_VERSION,
+                ).model_dump(mode="json")
+                for regime in self.config.graph_regimes:
+                    path = _metric_file(
+                        self.config,
+                        paths,
+                        regime,
+                        stem="question_metrics",
+                        suffix=".jsonl",
                     )
-                condition_rows[builder.key][regime] = read_jsonl(metric_path)
-                input_paths[f"{builder.key}/{regime}"] = metric_path
-        result = compute_exploratory_analysis(
-            condition_rows,
-            builder_metadata=builder_metadata_from_config(self.config.builders),
-            metric_fields=DEFAULT_PAIRED_METRIC_FIELDS,
+                    registry[f"{builder.key}/{regime}"] = fingerprint_artifact(
+                        path,
+                        logical_name=f"analysis/input/{builder.key}/{regime}",
+                        schema_version="4.0.0",
+                    ).model_dump(mode="json")
+
+        report = build_analysis_manifest(
+            registry,
+            builders=self.config.builders,
             expected_question_count=self.config.corpus.expected_questions,
-            bootstrap_samples=DEFAULT_BOOTSTRAP_SAMPLES,
-            confidence_level=DEFAULT_CONFIDENCE_LEVEL,
-            seed=DEFAULT_BOOTSTRAP_SEED,
-        )
-        analysis_dir = self.loaded.runs_root / "analysis"
-        pairwise_path = (
-            analysis_dir / f"exploratory_model_pairs.{exploratory_hash}.jsonl"
-        )
-        did_path = (
-            analysis_dir
-            / f"exploratory_difference_in_differences.{exploratory_hash}.jsonl"
-        )
-        report_path = analysis_dir / f"global_experiment_report.{exploratory_hash}.json"
-        write_immutable_jsonl(pairwise_path, result["pairwise_comparisons"])
-        write_immutable_jsonl(did_path, result["difference_in_differences"])
-        report = dict(result["global_report"])
-        report["family_and_scale"]["artifact_level"] = summarize_builder_artifacts(
-            builder_summaries,
-            builder_metadata=builder_metadata_from_config(self.config.builders),
+            artifact_root=self.loaded.runs_root,
         )
         report["lineage"] = {
             "experiment_id": self.config.experiment_id,
             "subset_id": self.config.corpus.subset_id,
             "questions_sha256": self.config.corpus.questions_sha256,
             "full_config_sha256": full_config_sha256(self.config),
-            "evaluation_identity_sha256": _evaluation_identity_sha256(self.config),
-            "primary_analysis_identity_sha256": _primary_analysis_identity_sha256(
-                self.config
-            ),
-            "exploratory_identity_sha256": _exploratory_identity_sha256(self.config),
         }
-        report["input_artifacts"] = {
-            name: fingerprint_artifact(
-                path,
-                logical_name=f"exploratory/input/{name}",
-                schema_version=(
-                    PRIMARY_ANALYSIS_SCHEMA_VERSION
-                    if name == "primary_analysis"
-                    else EVALUATION_SCHEMA_VERSION
-                    if name.endswith("/summary")
-                    else DOWNSTREAM_METRICS_SCHEMA_VERSION
-                ),
-            ).model_dump(mode="json")
-            for name, path in sorted(input_paths.items())
-        }
-        report["output_artifacts"] = {
-            "model_pairs": fingerprint_artifact(
-                pairwise_path,
-                logical_name="exploratory/model_pairs",
-                schema_version=EXPLORATORY_SCHEMA_VERSION,
-            ).model_dump(mode="json"),
-            "difference_in_differences": fingerprint_artifact(
-                did_path,
-                logical_name="exploratory/difference_in_differences",
-                schema_version=EXPLORATORY_SCHEMA_VERSION,
-            ).model_dump(mode="json"),
-        }
-        report["primary_analysis"] = read_json(primary_path)
-        write_immutable_json(report_path, report)
+        identity = sha256_json(report)
+        output = (
+            self.loaded.runs_root
+            / "analysis"
+            / f"analysis_manifest.{identity[:16]}.json"
+        )
+        write_immutable_json(output, report)
+        pointer = output.parent / "analysis_manifest.path"
+        temporary = pointer.with_suffix(".path.tmp")
+        temporary.write_text(output.name + "\n", encoding="utf-8")
+        temporary.replace(pointer)
         return StageOutcome(
-            "exploratory_analysis",
-            _exploratory_identity_sha256(self.config),
-            False,
-            {
-                "global_report": str(report_path),
-                "model_pairs": str(pairwise_path),
-                "difference_in_differences": str(did_path),
-                "model_pair_count": 66,
-            },
+            "analysis_manifest", identity, False, {"manifest": str(output)}
         )
 
     async def resume(

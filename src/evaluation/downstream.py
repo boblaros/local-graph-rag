@@ -15,37 +15,17 @@ from .answer_normalization import (
 
 
 DEFAULT_UNANSWERABLE_TOKEN = "INSUFFICIENT_INFORMATION"
-DEFAULT_RETRIEVAL_CUTOFFS = (5, 10, 20)
-DOWNSTREAM_METRICS_SCHEMA_VERSION = "3.0.0"
-SOURCE_QUESTION_TYPE_WEIGHTS = {
-    "inference": 816 / 2556,
-    "comparison": 856 / 2556,
-    "temporal": 583 / 2556,
-    "unanswerable": 301 / 2556,
-}
+COMPLETE_CHAIN_CUTOFF = 5
+DOWNSTREAM_METRICS_SCHEMA_VERSION = "4.0.0"
 DEFAULT_PAIRED_METRIC_FIELDS = (
     "retrieval_hit",
     "retrieval_recall",
     "reciprocal_rank",
-    *(
-        field
-        for cutoff in DEFAULT_RETRIEVAL_CUTOFFS
-        for field in (
-            f"retrieval_hit_at_{cutoff}",
-            f"retrieval_recall_at_{cutoff}",
-            f"complete_chain_recall_at_{cutoff}",
-            f"reciprocal_rank_at_{cutoff}",
-        )
-    ),
+    "complete_chain_recall_at_5",
     "answer_correct",
     "token_f1",
-    "unanswerable_correct",
     "hallucination",
     "over_abstention",
-    "retrieval_latency_ms",
-    "context_token_count",
-    "answer_latency_ms",
-    "answer_total_tokens",
 )
 LINEAGE_FIELDS = (
     "question_id",
@@ -100,15 +80,6 @@ def _ordered_strings(value: Any, field: str) -> list[str]:
     return result
 
 
-def _cutoffs(value: Sequence[int]) -> tuple[int, ...]:
-    result = tuple(int(item) for item in value)
-    if not result or any(item <= 0 for item in result):
-        raise ValueError("retrieval cutoffs must be positive")
-    if result != tuple(sorted(set(result))):
-        raise ValueError("retrieval cutoffs must be sorted and unique")
-    return result
-
-
 def _optional_number(row: Mapping[str, Any], field: str) -> int | float | None:
     value = row.get(field)
     if value is None:
@@ -124,7 +95,6 @@ def compute_question_downstream_metrics(
     answer_record: Mapping[str, Any] | Any,
     *,
     unanswerable_token: str = DEFAULT_UNANSWERABLE_TOKEN,
-    retrieval_cutoffs: Sequence[int] = DEFAULT_RETRIEVAL_CUTOFFS,
 ) -> dict[str, Any]:
     """Score one retrieval/answer pair and retain every required lineage ID."""
 
@@ -147,7 +117,6 @@ def compute_question_downstream_metrics(
         if "answerable" not in row or bool(row["answerable"]) != answerable:
             raise ValueError(f"{label} answerable flag does not match question")
 
-    cutoffs = _cutoffs(retrieval_cutoffs)
     gold_documents = _string_set(
         question_row.get("gold_document_ids"), "gold_document_ids"
     )
@@ -267,7 +236,6 @@ def compute_question_downstream_metrics(
         "reciprocal_rank": reciprocal_rank,
         "answer_outcome": answer_outcome,
         "answer_failed": answer_failed,
-        "complete_case": not retrieval_failed and not answer_failed,
         "answer_exact_match": exact_match,
         "token_precision": (
             scores.precision if scores is not None else 0.0 if answerable else None
@@ -307,27 +275,11 @@ def compute_question_downstream_metrics(
         if input_tokens is not None and output_tokens is not None
         else None
     )
-    for cutoff in cutoffs:
-        top_k = set(ranked_documents[:cutoff])
-        top_k_gold = gold_documents & top_k
-        result[f"retrieval_hit_at_{cutoff}"] = (
-            bool(top_k_gold) if answerable and gold_documents else None
-        )
-        result[f"retrieval_recall_at_{cutoff}"] = (
-            len(top_k_gold) / len(gold_documents)
-            if answerable and gold_documents
-            else None
-        )
-        result[f"complete_chain_recall_at_{cutoff}"] = (
-            gold_documents <= top_k if answerable and gold_documents else None
-        )
-        result[f"reciprocal_rank_at_{cutoff}"] = (
-            1.0 / first_relevant_rank
-            if first_relevant_rank is not None and first_relevant_rank <= cutoff
-            else 0.0
-            if answerable and gold_documents
-            else None
-        )
+    result["complete_chain_recall_at_5"] = (
+        gold_documents <= set(ranked_documents[:COMPLETE_CHAIN_CUTOFF])
+        if answerable and gold_documents
+        else None
+    )
     return result
 
 
@@ -386,48 +338,15 @@ def _metric_denominator(
     }
 
 
-def _source_type(question_type: str) -> str:
-    normalized = question_type.casefold()
-    if "comparison" in normalized:
-        return "comparison"
-    if "temporal" in normalized:
-        return "temporal"
-    if "null" in normalized or "unanswerable" in normalized:
-        return "unanswerable"
-    if "inference" in normalized:
-        return "inference"
-    raise ValueError(
-        f"question type has no frozen source-weight mapping: {question_type}"
-    )
-
-
 def _aggregate_rows(
-    rows: Sequence[Mapping[str, Any]], *, retrieval_cutoffs: Sequence[int]
+    rows: Sequence[Mapping[str, Any]],
 ) -> dict[str, Any]:
-    cutoffs = _cutoffs(retrieval_cutoffs)
     answerable = [row for row in rows if bool(row.get("answerable"))]
     unanswerable = [row for row in rows if not bool(row.get("answerable"))]
-    true_positive = sum(bool(row.get("predicted_unanswerable")) for row in unanswerable)
-    false_negative = len(unanswerable) - true_positive
+    false_negative = len(unanswerable) - sum(
+        bool(row.get("predicted_unanswerable")) for row in unanswerable
+    )
     false_positive = sum(bool(row.get("predicted_unanswerable")) for row in answerable)
-    true_negative = len(answerable) - false_positive
-    null_precision = (
-        true_positive / (true_positive + false_positive)
-        if true_positive + false_positive
-        else None
-    )
-    null_recall = (
-        true_positive / (true_positive + false_negative)
-        if true_positive + false_negative
-        else None
-    )
-    null_f1 = (
-        2 * null_precision * null_recall / (null_precision + null_recall)
-        if null_precision is not None
-        and null_recall is not None
-        and null_precision + null_recall
-        else None
-    )
     result: dict[str, Any] = {
         "question_count": len(rows),
         "answerable_count": len(answerable),
@@ -436,25 +355,12 @@ def _aggregate_rows(
             bool(row.get("retrieval_failed")) for row in rows
         ),
         "answer_failure_count": sum(bool(row.get("answer_failed")) for row in rows),
-        "complete_case_count": sum(
-            bool(row.get("complete_case", True)) for row in rows
-        ),
         "retrieval_hit": _mean(rows, "retrieval_hit"),
         "retrieval_recall": _mean(rows, "retrieval_recall"),
         "mrr": _mean(rows, "reciprocal_rank"),
         "empty_retrieval_rate": _mean(rows, "retrieval_empty"),
-        "answer_exact_match": _mean(rows, "answer_exact_match"),
-        "token_precision": _mean(rows, "token_precision"),
-        "token_recall": _mean(rows, "token_recall"),
         "token_f1": _mean(rows, "token_f1"),
         "answer_correct": _mean(rows, "answer_correct"),
-        "null_true_positive": true_positive,
-        "null_false_positive": false_positive,
-        "null_false_negative": false_negative,
-        "null_true_negative": true_negative,
-        "unanswerable_precision": null_precision,
-        "unanswerable_recall": null_recall,
-        "unanswerable_f1": null_f1,
         "hallucination_count": false_negative,
         "hallucination_rate": (
             false_negative / len(unanswerable) if unanswerable else None
@@ -485,21 +391,11 @@ def _aggregate_rows(
         result[f"{prefix}_median"] = _quantile(rows, field, 0.50)
         result[f"{prefix}_p90"] = _quantile(rows, field, 0.90)
         result[f"{prefix}_p95"] = _quantile(rows, field, 0.95)
-    for cutoff in cutoffs:
-        for prefix in (
-            "retrieval_hit_at",
-            "retrieval_recall_at",
-            "complete_chain_recall_at",
-            "reciprocal_rank_at",
-        ):
-            field = f"{prefix}_{cutoff}"
-            result[field] = _mean(rows, field)
-        result[f"mrr_at_{cutoff}"] = result[f"reciprocal_rank_at_{cutoff}"]
+    result["complete_chain_recall_at_5"] = _mean(rows, "complete_chain_recall_at_5")
     denominator_fields = (
         "retrieval_hit",
         "retrieval_recall",
         "reciprocal_rank",
-        "answer_exact_match",
         "token_f1",
         "answer_correct",
         "unanswerable_correct",
@@ -514,123 +410,29 @@ def _aggregate_rows(
     return result
 
 
-def _cross_type_aggregate(
-    by_type: Mapping[str, Mapping[str, Any]], *, weighted: bool
-) -> dict[str, float | None]:
-    excluded = {
-        "question_count",
-        "answerable_count",
-        "unanswerable_count",
-        "retrieval_failure_count",
-        "answer_failure_count",
-        "complete_case_count",
-        "metric_denominators",
-    }
-    fields = sorted(
-        {
-            field
-            for summary in by_type.values()
-            for field, value in summary.items()
-            if field not in excluded
-            and not field.endswith(("_count", "_total"))
-            and not field.startswith("null_")
-            and isinstance(value, (int, float))
-            and not isinstance(value, bool)
-        }
-    )
-    result: dict[str, float | None] = {}
-    for field in fields:
-        available = [
-            (question_type, float(summary[field]))
-            for question_type, summary in by_type.items()
-            if isinstance(summary.get(field), (int, float))
-            and not isinstance(summary.get(field), bool)
-        ]
-        if not available:
-            result[field] = None
-            continue
-        if not weighted:
-            result[field] = sum(value for _, value in available) / len(available)
-            continue
-        weights = [
-            SOURCE_QUESTION_TYPE_WEIGHTS[_source_type(name)] for name, _ in available
-        ]
-        denominator = sum(weights)
-        result[field] = (
-            sum(value * weight for (_, value), weight in zip(available, weights))
-            / denominator
-        )
-    return result
-
-
 def aggregate_downstream_metrics(
     rows: Sequence[Mapping[str, Any] | Any],
-    *,
-    retrieval_cutoffs: Sequence[int] = DEFAULT_RETRIEVAL_CUTOFFS,
 ) -> dict[str, Any]:
-    """Aggregate canonical question metrics overall and by question type."""
-
+    """Micro estimates over all evaluated questions and within question types."""
     normalized = [_row(value) for value in rows]
     if not normalized:
         raise ValueError("downstream aggregation requires at least one row")
-    overall = _aggregate_rows(normalized, retrieval_cutoffs=retrieval_cutoffs)
-    question_types = sorted(
-        {str(row.get("question_type") or "unknown") for row in normalized}
-    )
-    by_type = {
-        question_type: _aggregate_rows(
-            [
-                row
-                for row in normalized
-                if str(row.get("question_type") or "unknown") == question_type
-            ],
-            retrieval_cutoffs=retrieval_cutoffs,
-        )
-        for question_type in question_types
-    }
-    complete_case_rows = [
-        row for row in normalized if bool(row.get("complete_case", True))
-    ]
-    complete_by_type = {
-        question_type: _aggregate_rows(
-            [
-                row
-                for row in complete_case_rows
-                if str(row.get("question_type") or "unknown") == question_type
-            ],
-            retrieval_cutoffs=retrieval_cutoffs,
-        )
-        for question_type in question_types
-        if any(
-            str(row.get("question_type") or "unknown") == question_type
-            for row in complete_case_rows
-        )
-    }
-    primary = {
-        "estimand": "intention_to_evaluate",
-        "micro": overall,
-        "macro": _cross_type_aggregate(by_type, weighted=False),
-        "source_weighted": _cross_type_aggregate(by_type, weighted=True),
-        "by_question_type": by_type,
-    }
-    secondary = {
-        "estimand": "complete_case",
-        "micro": _aggregate_rows(
-            complete_case_rows, retrieval_cutoffs=retrieval_cutoffs
-        )
-        if complete_case_rows
-        else None,
-        "macro": _cross_type_aggregate(complete_by_type, weighted=False),
-        "source_weighted": _cross_type_aggregate(complete_by_type, weighted=True),
-        "by_question_type": complete_by_type,
-        "excluded_failure_count": len(normalized) - len(complete_case_rows),
-    }
+    kinds = sorted({str(row.get("question_type") or "unknown") for row in normalized})
     return {
         "schema_version": DOWNSTREAM_METRICS_SCHEMA_VERSION,
-        **overall,
-        "by_question_type": by_type,
-        "analyses": {"primary": primary, "secondary": secondary},
-        "source_question_type_weights": SOURCE_QUESTION_TYPE_WEIGHTS,
+        "estimand": "intention_to_evaluate",
+        "aggregation": "micro",
+        **_aggregate_rows(normalized),
+        "by_question_type": {
+            kind: _aggregate_rows(
+                [
+                    row
+                    for row in normalized
+                    if str(row.get("question_type") or "unknown") == kind
+                ]
+            )
+            for kind in kinds
+        },
     }
 
 
@@ -640,7 +442,6 @@ def compute_downstream_metrics(
     answer_records: Sequence[Mapping[str, Any] | Any],
     *,
     unanswerable_token: str = DEFAULT_UNANSWERABLE_TOKEN,
-    retrieval_cutoffs: Sequence[int] = DEFAULT_RETRIEVAL_CUTOFFS,
 ) -> list[dict[str, Any]]:
     """Score an exact question/retrieval/answer snapshot, failing on omissions."""
 
@@ -675,7 +476,6 @@ def compute_downstream_metrics(
             retrieval_index[question_id],
             answer_index[question_id],
             unanswerable_token=unanswerable_token,
-            retrieval_cutoffs=retrieval_cutoffs,
         )
         for question_id in sorted(question_index)
     ]
@@ -683,7 +483,7 @@ def compute_downstream_metrics(
 
 __all__ = [
     "DEFAULT_UNANSWERABLE_TOKEN",
-    "DEFAULT_RETRIEVAL_CUTOFFS",
+    "COMPLETE_CHAIN_CUTOFF",
     "DEFAULT_PAIRED_METRIC_FIELDS",
     "DOWNSTREAM_METRICS_SCHEMA_VERSION",
     "LINEAGE_FIELDS",

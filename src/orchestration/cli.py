@@ -154,9 +154,14 @@ def build_parser() -> argparse.ArgumentParser:
         "primary-analysis",
         help="Collect primary, secondary and incremental effects for 12 builders",
     )
-    subparsers.add_parser(
-        "exploratory-analysis",
-        help="Build 66 model pairs, DiD, family/scale and global report",
+    manifest = subparsers.add_parser(
+        "analysis-manifest",
+        help="Register notebook inputs without exploratory statistics",
+    )
+    manifest.add_argument(
+        "--from-report",
+        type=Path,
+        help="Import verified inputs from an archived global report",
     )
 
     resume = subparsers.add_parser(
@@ -306,8 +311,8 @@ async def _async_main(args: argparse.Namespace) -> int:
         result = harness.evaluation(args.builder, reclaim_running=args.reclaim_running)
     elif args.command == "primary-analysis":
         result = harness.primary_analysis()
-    elif args.command == "exploratory-analysis":
-        result = harness.exploratory_analysis()
+    elif args.command == "analysis-manifest":
+        result = harness.analysis_manifest(args.from_report)
     elif args.command == "resume":
         if args.all_builders:
             code, result = await _resume_all(args, harness)

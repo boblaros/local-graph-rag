@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from collections import Counter, defaultdict
+from collections import Counter
 from collections.abc import Iterable, Mapping, Sequence
 import dataclasses
 from typing import Any
@@ -47,57 +47,6 @@ def _difference(left: Any, right: Any) -> int | None:
     if left is None or right is None:
         return None
     return int(left) - int(right)
-
-
-def _pair(value: Iterable[str]) -> tuple[str, str]:
-    members = sorted(str(item).strip() for item in value if item is not None)
-    if len(members) != 2 or not all(members) or members[0] == members[1]:
-        raise ValueError(f"ER pair must contain two distinct mention IDs: {members}")
-    return members[0], members[1]
-
-
-def _row_pair(row: Mapping[str, Any]) -> tuple[str, str]:
-    members = row.get("mention_ids")
-    if members is None:
-        members = (row.get("left_mention_id"), row.get("right_mention_id"))
-    return _pair(members)
-
-
-def _prf(predicted: set[Any], gold: set[Any]) -> dict[str, float | None]:
-    true_positive = len(predicted & gold)
-    precision = _ratio(true_positive, len(predicted))
-    recall = _ratio(true_positive, len(gold))
-    f1 = (
-        2 * precision * recall / (precision + recall)
-        if precision is not None and recall is not None and precision + recall
-        else None
-    )
-    return {"precision": precision, "recall": recall, "f1": f1}
-
-
-def _bcubed(
-    predicted: Mapping[str, str], gold: Mapping[str, str]
-) -> dict[str, float | None]:
-    common = sorted(set(predicted) & set(gold))
-    if not common:
-        return {"precision": None, "recall": None, "f1": None}
-    predicted_members: dict[str, set[str]] = defaultdict(set)
-    gold_members: dict[str, set[str]] = defaultdict(set)
-    for mention in common:
-        predicted_members[predicted[mention]].add(mention)
-        gold_members[gold[mention]].add(mention)
-    precision_sum = 0.0
-    recall_sum = 0.0
-    for mention in common:
-        intersection = (
-            predicted_members[predicted[mention]] & gold_members[gold[mention]]
-        )
-        precision_sum += len(intersection) / len(predicted_members[predicted[mention]])
-        recall_sum += len(intersection) / len(gold_members[gold[mention]])
-    precision = precision_sum / len(common)
-    recall = recall_sum / len(common)
-    f1 = 2 * precision * recall / (precision + recall) if precision + recall else None
-    return {"precision": precision, "recall": recall, "f1": f1}
 
 
 def _node_id(value: Mapping[str, Any] | str) -> str:
@@ -303,8 +252,6 @@ def compute_er_metrics(
     aliases: Iterable[Mapping[str, Any] | Any] = (),
     merge_plan: Mapping[str, Any] | None = None,
     rewrite_summary: Mapping[str, Any] | None = None,
-    gold_pairs: Iterable[Iterable[str]] | None = None,
-    gold_clusters: Mapping[str, str] | None = None,
     native_graph: Mapping[str, Any] | None = None,
     er_graph: Mapping[str, Any] | None = None,
     runtime: Mapping[str, Any] | None = None,
@@ -330,26 +277,6 @@ def compute_er_metrics(
     if any(not source for source in sources):
         raise ValueError("pair decisions require source")
     decision_counts = Counter(actions)
-    merges = {
-        _row_pair(row)
-        for row, action in zip(decisions, actions, strict=True)
-        if action == "merge"
-    }
-    candidate_set = {_row_pair(row) for row in candidates}
-    gold_set = {_pair(pair) for pair in gold_pairs} if gold_pairs is not None else None
-    pair_metrics = (
-        _prf(merges, gold_set)
-        if gold_set is not None
-        else {"precision": None, "recall": None, "f1": None}
-    )
-    candidate_recall = (
-        _ratio(len(candidate_set & gold_set), len(gold_set))
-        if gold_set is not None
-        else None
-    )
-    false_merge_rate = (
-        _ratio(len(merges - gold_set), len(merges)) if gold_set is not None else None
-    )
     predicted_clusters = {
         str(row.get("mention_id")): str(row.get("canonical_entity_id"))
         for row in mapping_rows
@@ -403,11 +330,6 @@ def compute_er_metrics(
         "mentions": len(mention_rows),
         "canonical_entities": len(canonical_rows),
         "candidate_count": len(candidates),
-        "candidate_recall": candidate_recall,
-        "pair_precision": pair_metrics["precision"],
-        "pair_recall": pair_metrics["recall"],
-        "pair_f1": pair_metrics["f1"],
-        "false_merge_rate": false_merge_rate,
         "merge_count": decision_counts["merge"],
         "reject_count": decision_counts["reject"],
         "abstain_count": decision_counts["abstain"],
@@ -415,11 +337,6 @@ def compute_er_metrics(
         "judge_rate": _ratio(judge_calls, len(decisions)),
         "cluster_size_distribution": dict(sorted(Counter(sizes.values()).items())),
         "largest_cluster": max(sizes.values(), default=0),
-        "bcubed": (
-            _bcubed(predicted_clusters, gold_clusters)
-            if gold_clusters is not None
-            else {"precision": None, "recall": None, "f1": None}
-        ),
         "alias_coverage": _ratio(
             len(source_names & represented_names), len(source_names)
         ),

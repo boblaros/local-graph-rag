@@ -16,7 +16,6 @@ from src.orchestration.harness import (
     StageOutcome,
     _condition_file,
     _evaluation_identity_sha256,
-    _exploratory_identity_sha256,
     _judge_budget_gate_path,
     _metric_file,
     _primary_analysis_identity_sha256,
@@ -76,7 +75,7 @@ def test_cli_exposes_experiment_commands() -> None:
         "answering",
         "evaluation",
         "primary-analysis",
-        "exploratory-analysis",
+        "analysis-manifest",
         "resume",
         "status",
     }
@@ -100,15 +99,15 @@ def test_judge_budget_retry_preserves_the_failed_gate(tmp_path: Path) -> None:
     )
 
 
-def test_exploratory_identity_is_deterministic_and_separate() -> None:
+def test_evaluation_and_primary_identities_are_deterministic_and_separate() -> None:
     config = resolved_config(all_builders=True)
     evaluation = _evaluation_identity_sha256(config)
     primary = _primary_analysis_identity_sha256(config)
-    first = _exploratory_identity_sha256(config)
-    assert first == _exploratory_identity_sha256(config)
-    assert len(first) == 64
-    assert EVALUATION_SCHEMA_VERSION == "5.0.0"
-    assert len({evaluation, primary, first}) == 3
+    assert evaluation == _evaluation_identity_sha256(config)
+    assert primary == _primary_analysis_identity_sha256(config)
+    assert len(evaluation) == len(primary) == 64
+    assert EVALUATION_SCHEMA_VERSION == "6.0.0"
+    assert evaluation != primary
 
 
 def test_evaluation_identity_does_not_change_upstream_qa_paths(tmp_path: Path) -> None:

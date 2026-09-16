@@ -2,14 +2,11 @@ import pytest
 
 from src.evaluation.er_metrics import compute_er_metrics, compute_graph_topology
 from src.evaluation.extraction_metrics import (
-    bootstrap_extraction_metrics,
     compute_extraction_efficiency,
     compute_extraction_metrics,
 )
 from src.evaluation.paired import (
     paired_regime_deltas,
-    paired_variant_deltas,
-    summarize_paired_deltas,
     summarize_regime_deltas,
 )
 from src.evaluation.primary import (
@@ -93,70 +90,6 @@ def test_extraction_efficiency_deduplicates_physical_attempt_exports() -> None:
     assert metrics["total_tokens"] == 17
 
 
-def test_extraction_bootstrap_resamples_whole_documents_deterministically() -> None:
-    chunks = [
-        {
-            "document_id": "d1",
-            "token_count": 100,
-            "entity_present": True,
-            "relations_present": True,
-            "entities": [{"description_present": True}],
-            "relations": [{"description_present": True}],
-            "parse_records": [{"status": "strict"}],
-        },
-        {
-            "document_id": "d1",
-            "token_count": 100,
-            "entity_present": True,
-            "relations_present": False,
-            "entities": [{"description_present": False}],
-            "relations": [],
-            "parse_records": [{"status": "recovered"}],
-        },
-        {
-            "document_id": "d2",
-            "token_count": 100,
-            "entity_present": False,
-            "relations_present": False,
-            "entities": [],
-            "relations": [],
-            "parse_records": [{"status": "strict"}],
-        },
-    ]
-    calls = [
-        {
-            "document_id": "d1",
-            "call_id": "c1",
-            "attempt_number": 1,
-            "json_valid": True,
-            "schema_valid": True,
-            "parse_success": True,
-            "latency_ms": 10,
-        },
-        {
-            "document_id": "d2",
-            "call_id": "c2",
-            "attempt_number": 1,
-            "json_valid": False,
-            "schema_valid": False,
-            "parse_success": False,
-            "latency_ms": 20,
-        },
-    ]
-
-    first = bootstrap_extraction_metrics(chunks, calls, bootstrap_samples=200, seed=9)
-    second = bootstrap_extraction_metrics(chunks, calls, bootstrap_samples=200, seed=9)
-
-    assert first == second
-    assert first["cluster_unit"] == "document_id"
-    assert first["document_count"] == 2
-    assert first["point_estimates"]["entity_extraction_coverage"] == 2 / 3
-    assert (
-        first["confidence_intervals"]["entity_extraction_coverage"]["replicate_count"]
-        == 200
-    )
-
-
 def test_er_metrics_and_paired_lineage() -> None:
     er = compute_er_metrics(
         mentions=[
@@ -203,8 +136,6 @@ def test_er_metrics_and_paired_lineage() -> None:
             "input_relation_count": 4,
             "materialized_edge_count": 1,
         },
-        gold_pairs=[("a", "b")],
-        gold_clusters={"a": "gold", "b": "gold"},
         native_graph={
             "nodes": [{"id": "a"}, {"id": "b"}, {"id": "isolated"}],
             "edges": [{"source": "a", "target": "b"}],
@@ -227,7 +158,6 @@ def test_er_metrics_and_paired_lineage() -> None:
             "judge_cost_basis": "local_ollama_no_api_charge",
         },
     )
-    assert er["pair_f1"] == 1.0
     assert er["judge_rate"] == 1.0
     assert er["node_reduction"] == 1
     assert er["edge_deduplication"] == 2
@@ -250,7 +180,7 @@ def test_er_metrics_and_paired_lineage() -> None:
         "retrieval_result_id": "r",
         "answer_result_id": "a",
     }
-    rows = paired_variant_deltas(
+    rows = paired_regime_deltas(
         [
             {
                 **common,
@@ -268,20 +198,24 @@ def test_er_metrics_and_paired_lineage() -> None:
             }
         ],
         metric_fields=["score"],
+        left_regime="native_lightrag",
+        right_regime="advanced_lightrag_er",
     )
     assert rows[0]["deltas"]["score"] == 0.5
 
-    summary = summarize_paired_deltas(
+    summary = summarize_regime_deltas(
         rows,
         metric_fields=["score"],
         bootstrap_samples=100,
         confidence_level=0.95,
         seed=42,
+        left_regime="native_lightrag",
+        right_regime="advanced_lightrag_er",
     )
     score = summary["metrics"]["score"]
     assert score["paired_count"] == 1
-    assert score["native_mean"] == 0.25
-    assert score["er_mean"] == 0.75
+    assert score["left_mean"] == 0.25
+    assert score["right_mean"] == 0.75
     assert score["mean_delta"] == 0.5
     assert score["ci_lower"] == 0.5
     assert score["ci_upper"] == 0.5
@@ -357,7 +291,7 @@ def test_paired_bootstrap_is_deterministic_and_grouped_by_question_type() -> Non
             "score": score,
         }
 
-    paired = paired_variant_deltas(
+    paired = paired_regime_deltas(
         [
             row("q1", "native_lightrag", 0.0, "inference"),
             row("q2", "native_lightrag", 1.0, "temporal"),
@@ -367,12 +301,24 @@ def test_paired_bootstrap_is_deterministic_and_grouped_by_question_type() -> Non
             row("q2", "advanced_lightrag_er", 0.0, "temporal"),
         ],
         metric_fields=["score"],
+        left_regime="native_lightrag",
+        right_regime="advanced_lightrag_er",
     )
-    first = summarize_paired_deltas(
-        paired, metric_fields=["score"], bootstrap_samples=500, seed=7
+    first = summarize_regime_deltas(
+        paired,
+        metric_fields=["score"],
+        bootstrap_samples=500,
+        seed=7,
+        left_regime="native_lightrag",
+        right_regime="advanced_lightrag_er",
     )
-    second = summarize_paired_deltas(
-        paired, metric_fields=["score"], bootstrap_samples=500, seed=7
+    second = summarize_regime_deltas(
+        paired,
+        metric_fields=["score"],
+        bootstrap_samples=500,
+        seed=7,
+        left_regime="native_lightrag",
+        right_regime="advanced_lightrag_er",
     )
 
     assert first == second
@@ -380,13 +326,13 @@ def test_paired_bootstrap_is_deterministic_and_grouped_by_question_type() -> Non
     # Stratification keeps one inference and one temporal question in every draw.
     assert first["metrics"]["score"]["ci_lower"] == 0.0
     assert first["metrics"]["score"]["ci_upper"] == 0.0
-    assert first["metrics"]["score"]["native_ci_lower"] == 0.5
-    assert first["metrics"]["score"]["er_ci_upper"] == 0.5
+    assert first["metrics"]["score"]["left_ci_lower"] == 0.5
+    assert first["metrics"]["score"]["right_ci_upper"] == 0.5
     assert first["by_question_type"]["inference"]["score"]["mean_delta"] == 1.0
     assert first["by_question_type"]["temporal"]["score"]["mean_delta"] == -1.0
 
 
-def test_paired_summary_reports_ite_complete_case_and_absolute_intervals() -> None:
+def test_paired_summary_keeps_failed_questions_and_absolute_intervals() -> None:
     def metric_row(question_id, regime, question_type, score, failed=False):
         return {
             "question_id": question_id,
@@ -409,7 +355,7 @@ def test_paired_summary_reports_ite_complete_case_and_absolute_intervals() -> No
         ("q3", "temporal", 1.0, 0.0, False),
         ("q4", "unanswerable", 1.0, 0.0, True),
     ]
-    paired = paired_variant_deltas(
+    paired = paired_regime_deltas(
         [
             metric_row(question, "native_lightrag", kind, native)
             for question, kind, native, _er, _failed in definitions
@@ -425,23 +371,28 @@ def test_paired_summary_reports_ite_complete_case_and_absolute_intervals() -> No
             for question, kind, _native, er, failed in definitions
         ],
         metric_fields=["answer_correct"],
+        left_regime="native_lightrag",
+        right_regime="advanced_lightrag_er",
     )
-    summary = summarize_paired_deltas(
+    summary = summarize_regime_deltas(
         paired,
         metric_fields=["answer_correct"],
         bootstrap_samples=100,
         seed=3,
+        left_regime="native_lightrag",
+        right_regime="advanced_lightrag_er",
     )
 
-    metric = summary["analyses"]["primary"]["micro"]["answer_correct"]
+    metric = summary["metrics"]["answer_correct"]
     assert summary["bootstrap"]["method"] == (
         "paired_stratified_percentile_by_question_type"
     )
-    assert metric["native_ci_lower"] is not None
-    assert metric["er_ci_upper"] is not None
+    assert metric["left_ci_lower"] is not None
+    assert metric["right_ci_upper"] is not None
     assert metric["delta_ci_lower"] == metric["ci_lower"]
-    assert summary["analyses"]["secondary"]["question_count"] == 3
-    assert summary["analyses"]["secondary"]["excluded_failure_count"] == 1
+    assert summary["paired_question_count"] == 4
+    assert summary["aggregation"] == "micro"
+    assert "analyses" not in summary
 
 
 def test_graph_topology_reports_provenance_coverage_and_self_loops() -> None:
@@ -500,9 +451,10 @@ def test_prespecified_analysis_collects_cascade_roles_for_exactly_12_builders() 
     assert report["comparison_roles"]["secondary"]["effect_direction"] == (
         "advanced_lightrag_er_minus_native_lightrag"
     )
-    assert report["comparison_roles"]["incremental_ablation"][
-        "effect_direction"
-    ] == "advanced_lightrag_er_rr_minus_advanced_lightrag_er"
+    assert (
+        report["comparison_roles"]["incremental_ablation"]["effect_direction"]
+        == "advanced_lightrag_er_rr_minus_advanced_lightrag_er"
+    )
     assert [
         item["builder_key"]
         for item in report["comparison_roles"]["primary"]["builders"]

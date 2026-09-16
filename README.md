@@ -273,21 +273,41 @@ within-builder contrasts:
   --config configs/experiment.resolved.yaml primary-analysis
 ```
 
-Then create the exploratory cross-builder comparisons:
+Create the verified input manifest used by the analysis notebooks:
 
 ```bash
 .venv/bin/python scripts/experiment.py \
-  --config configs/experiment.resolved.yaml exploratory-analysis
+  --config configs/experiment.yaml analysis-manifest
 ```
 
-The evaluation uses the same question IDs for paired conditions. It reports
-both intention-to-evaluate and complete-case estimates, keeps question types
-separate, and also reports micro, macro, and source-weighted aggregates. Paired
-95% confidence intervals use 10,000 question-ID-paired, question-type-stratified
-bootstrap resamples with seed 42. Binary cross-builder comparisons use exact
-McNemar tests with Holm correction within each defined family. Graph-level
-metrics are descriptive; graph nodes and edges are not treated as independent
-replicates.
+To use the previously evaluated thesis artifacts, import their verified registry:
+
+```bash
+.venv/bin/python scripts/experiment.py \
+  --config configs/experiment.yaml analysis-manifest \
+  --from-report runs/analysis/global_experiment_report.34d2c998f8e8143d.json
+```
+
+The command verifies the 12 summaries and 36 question-metric files, writes a
+manifest with relative paths, and selects it through `runs/analysis/analysis_manifest.path`.
+It does not run model inference or cross-builder statistical comparisons.
+
+Evaluation reports micro averages for intention-to-evaluate outcomes, overall
+and by question type. The eight paired outcomes are retrieval hit, retrieval
+recall, reciprocal rank, complete-chain recall at 5, answer correctness, token
+F1, hallucination, and over-abstention. The cumulative cascade retains
+ER+RR−Native, ER−Native, and the conditional ER+RR−ER comparison. Paired 95%
+confidence intervals use the unchanged 10,000 question-ID-paired,
+question-type-stratified bootstrap resamples with seed 42. Graph metrics remain
+descriptive; nodes and edges are not treated as independent replicates.
+
+Evaluation schema 6, downstream schema 4, and paired schema 4 remove alternate
+aggregations, complete-case analyses, extra retrieval cutoffs, extraction
+bootstrap, and gold-dependent ER scores. Evaluation identity changes with this
+reporting contract. Upstream extraction, graph, retrieval, and answer identities
+are unchanged. Archived schema-5 summaries and schema-3 question metrics remain
+valid manifest inputs; their files and hashes are preserved. Recomputing the
+new evaluation uses saved model outputs and requires no new model calls.
 
 ## Data and artifacts
 
@@ -324,9 +344,8 @@ runs/
 │   └── workspace or materialization_attempts/
 └── analysis/
     ├── prespecified_cascade_comparisons.<hash>.json
-    ├── exploratory_model_pairs.<hash>.jsonl
-    ├── exploratory_difference_in_differences.<hash>.jsonl
-    └── global_experiment_report.<hash>.json
+    ├── analysis_manifest.<hash>.json
+    └── analysis_manifest.path
 ```
 
 Scientific JSONL artifacts include schema and lineage metadata. Manifests store
