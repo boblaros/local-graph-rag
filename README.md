@@ -277,8 +277,11 @@ Create the verified input manifest used by the analysis notebooks:
 
 ```bash
 .venv/bin/python scripts/experiment.py \
-  --config configs/experiment.yaml analysis-manifest
+  --config configs/experiment.resolved.yaml analysis-manifest
 ```
+
+Use the same configuration that produced the evaluations for both commands;
+the evaluation filenames depend on its identity.
 
 To use the previously evaluated thesis artifacts, import their verified registry:
 
@@ -291,6 +294,8 @@ To use the previously evaluated thesis artifacts, import their verified registry
 The command verifies the 12 summaries and 36 question-metric files, writes a
 manifest with relative paths, and selects it through `runs/analysis/analysis_manifest.path`.
 It does not run model inference or cross-builder statistical comparisons.
+The archived report and its referenced metric files must already be present
+under `runs/`; importing the registry does not regenerate missing artifacts.
 
 Evaluation reports micro averages for intention-to-evaluate outcomes, overall
 and by question type. The eight paired outcomes are retrieval hit, retrieval
@@ -363,10 +368,10 @@ Run the complete local test suite:
 .venv/bin/python -m pytest -q
 ```
 
-Current result:
+Last verified result after simplification:
 
 ```text
-196 passed
+195 passed
 ```
 
 Run the source and test linter:
